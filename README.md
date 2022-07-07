@@ -30,7 +30,7 @@ Following `services.xremap` options are exposed:
 
 * `config` – configuration file for xremap. See [original repo](https://github.com/k0kubun/xremap) for examples.
 * `withSway` – whether to enable Sway support
-* `withSway` – whether to enable Gnome support
+* `withGnome` – whether to enable Gnome support
 * `package` – which package for xremap to use
 * `userId` – user under which Sway IPC socket runs
 * `deviceName` – the name of the device to be used. To find out the name, you can check `/proc/bus/input/devices`
