@@ -3,9 +3,9 @@ xremap: naersk-lib: { pkgs, config, ... }:
 let
   cfg = config.services.xremap;
   package = (import ../overlay xremap naersk-lib pkgs { inherit (cfg) withSway withGnome withX11; }).xremap-unwrapped;
-  configFile = pkgs.writeTExtFile {
+  configFile = pkgs.writeTextFile {
     name = "xremap-config.yml";
-    text = pkgs.lib.generators.toYaml { } cfg.config;
+    text = pkgs.lib.generators.toYAML { } cfg.config;
   };
 in
 with pkgs.lib;
