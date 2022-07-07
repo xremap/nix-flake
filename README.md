@@ -28,7 +28,7 @@ Alternatively, flake application can be `nix run` to launch xremap without featu
 
 Following `services.xremap` options are exposed:
 
-* `config` – configuration file for xremap. See [original repo](https://github.com/k0kubun/xremap) for examples.
+* `config` – configuration for xremap defined as Nix attribute set. See [original repo](https://github.com/k0kubun/xremap) for examples.
 * `withSway` – whether to enable Sway support
 * `withGnome` – whether to enable Gnome support
 * `package` – which package for xremap to use

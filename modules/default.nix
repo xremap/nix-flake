@@ -3,6 +3,10 @@ xremap: naersk-lib: { pkgs, config, ... }:
 let
   cfg = config.services.xremap;
   package = (import ../overlay xremap naersk-lib pkgs { inherit (cfg) withSway withGnome withX11; }).xremap-unwrapped;
+  configFile = pkgs.writeTExtFile {
+    name = "xremap-config.yml";
+    text = pkgs.lib.generators.toYaml { } cfg.config;
+  };
 in
 with pkgs.lib;
 {
@@ -15,24 +19,36 @@ with pkgs.lib;
       default = package;
     };
     config = mkOption {
-      type = types.either types.str types.path;
-      default = "";
+      type = types.attrs;
+      description = "Xremap configuration. See xremap repo for examples";
+      default = {
+        modmap = [ ];
+      };
       example = ''
-                modmap:
-                - name: Except Chrome
-                application:
-        not: Google-chrome
-             remap:
-        CapsLock: Esc
-                  keymap:
-                  - name: Emacs binding
-                  application:
-        only: Slack
-              remap:
-              C-b: left
-              C-f: right
-              C-p: up
-              C-n: down
+        {
+          modmap = [
+            {
+              name = "Global",
+              remap = {
+                CapsLock = "Esc";
+                Ctrl_L = "Esc";
+              };
+            }
+          ];
+          keymap = [
+            {
+              name = "Default (Nocturn, etc.)",
+              application = {
+              not = [ "Google-chrome", "Slack", "Gnome-terminal", "jetbrains-idea"];
+              };
+              remap = {
+                # Emacs basic
+                "C-b" = "left";
+                "C-f" = "right";
+              };
+            }
+          ];
+        }
       '';
     };
     userId = mkOption {
@@ -51,7 +67,6 @@ with pkgs.lib;
       userPath = "/run/user/${toString cfg.userId}";
     in
     {
-      environment.etc."xremap_config.yml".text = cfg.config;
       systemd.services.xremap = {
         description = "xremap";
         path = [ cfg.package ];
@@ -97,7 +112,7 @@ with pkgs.lib;
           RestrictSUIDSGID = true;
           # End of hardening
           ExecStart = ''
-            ${cfg.package}/bin/xremap --device "${cfg.deviceName}" ${if cfg.watch then "--watch" else ""} /etc/xremap_config.yml
+            ${cfg.package}/bin/xremap --device "${cfg.deviceName}" ${if cfg.watch then "--watch" else ""} ${configFile}
           '';
           Nice = -20;
         };
