@@ -28,7 +28,7 @@ Flake implements xremap features that allow specifying per-application remapping
     }
     ```
 
-2. Import the `xremap-flake.nixosModules.defalut` module.
+2. Import the `xremap-flake.nixosModules.default` module.
 3. Configure the [module options](#Configuration)
 
 Alternatively, flake application can be `nix run` to launch xremap without features.
