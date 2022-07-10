@@ -24,7 +24,7 @@ Flake implements xremap features that allow specifying per-application remapping
 
     ```nix
     {
-        inputs.xremap-flake.url = "github:VTimofeenko/xremap?dir=nix-flake";
+        inputs.xremap-flake.url = "github:xremap/nix-flake";
     }
     ```
 
