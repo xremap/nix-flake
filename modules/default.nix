@@ -1,7 +1,9 @@
-xremap: naersk-lib: { pkgs, config, ... }:
+# Only the sources (xremap, naersk) are needed, since they will use pkgs and the system defined outside the module
+xremap: naersk: { pkgs, config, ... }:
 
 let
   cfg = config.services.xremap;
+  naersk-lib = pkgs.callPackage naersk { };
   package = (import ../overlay xremap naersk-lib pkgs { inherit (cfg) withSway withGnome withX11; }).xremap-unwrapped;
 in
 with pkgs.lib;

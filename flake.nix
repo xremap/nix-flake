@@ -14,22 +14,49 @@
   };
   outputs = { self, nixpkgs, naersk, xremap }:
     let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      naersk-lib = pkgs.callPackage naersk { };
-      package = (import ./overlay xremap naersk-lib pkgs { }).xremap-unwrapped;
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
     in
+    rec
     {
-      packages."${system}".default = package;
-      apps."${system}".default = {
-        type = "app";
-        program = "${package}/bin/xremap";
-      };
-      # Note, "pkgs" omitted here, so that it plays well with other overlays
-      nixosModules.default = import ./modules xremap naersk-lib;
-      devShells."${system}".default = with pkgs; mkShell {
-        buildInputs = [ cargo rustc rustfmt rustPackages.clippy ];
-        RUST_SRC_PATH = rustPlatform.rustLibSrc;
-      };
+      packages = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+          naersk-lib = pkgs.callPackage naersk { };
+        in
+        {
+          default = (import ./overlay xremap naersk-lib pkgs { }).xremap-unwrapped;
+        }
+      );
+      apps = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+          naersk-lib = pkgs.callPackage naersk { };
+          package = (import ./overlay xremap naersk-lib pkgs { }).xremap-unwrapped;
+        in
+        {
+          default = {
+            type = "app";
+            program = "${package}/bin/xremap";
+          };
+        }
+      );
+      devShells = forAllSystems
+        (system:
+          let
+            pkgs = nixpkgsFor.${system};
+          in
+          {
+            default =
+              with pkgs; mkShell {
+                buildInputs = [ cargo rustc rustfmt rustPackages.clippy ];
+                RUST_SRC_PATH = rustPlatform.rustLibSrc;
+              };
+          }
+        );
+
+      # See comments in the module
+      nixosModules.default = import ./modules xremap naersk;
     };
 }
