@@ -80,7 +80,8 @@ with pkgs.lib;
     };
     deviceName = mkOption {
       type = types.str;
-      description = "Device name which xremap will hook into";
+      default = "";
+      description = "Device name which xremap will remap. If not specified - xremap will remap all devices.";
     };
     watch = mkEnableOption "running xremap watching new devices";
   };

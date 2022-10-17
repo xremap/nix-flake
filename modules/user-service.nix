@@ -35,7 +35,7 @@ in
         UMask = "077";
         RestrictAddressFamilies = "AF_UNIX";
         ExecStart = ''
-          ${cfg.package}/bin/xremap --device "${cfg.deviceName}" ${if cfg.watch then "--watch" else ""} ${configFile}
+          ${cfg.package}/bin/xremap ${if cfg.deviceName != "" then "--device \"${cfg.deviceName}\"" else ""} ${if cfg.watch then "--watch" else ""} ${configFile}
         '';
       };
     };
