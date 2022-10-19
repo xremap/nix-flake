@@ -54,7 +54,7 @@ in
       RestrictSUIDSGID = true;
       # End of hardening
       ExecStart = ''
-        ${cfg.package}/bin/xremap ${if cfg.deviceName then "--device ${cfg.deviceName}" else ""} ${if cfg.watch then "--watch" else ""} ${configFile}
+        ${cfg.package}/bin/xremap ${if cfg.deviceName != "" then "--device \"${cfg.deviceName}\"" else ""} ${if cfg.watch then "--watch" else ""} ${configFile}
       '';
       Nice = -20;
     };
