@@ -6,16 +6,18 @@ Flake allows running xremap as a system-wide service and as a user service (cont
 
 Flake implements xremap features that allow specifying per-application remapping. Following combinations are tested:
 
-| Scenario | No features | Sway | Gnome | X11 |
-| - | - | - | - | - |
-| System | :heavy_check_mark: | :heavy_check_mark:`*` | :heavy_multiplication_x: | :question: |
-| User   | :heavy_check_mark: | :heavy_check_mark:    | :heavy_check_mark:       | :question: |
+| Scenario | No features | Sway | Gnome | X11 | Hyprland |
+| - | - | - | - | - | - |
+| System | :heavy_check_mark: | :heavy_check_mark:`*` | :heavy_multiplication_x: | :question: | :heavy_multiplication_x:`**` |
+| User   | :heavy_check_mark: | :heavy_check_mark:    | :heavy_check_mark:       | :question: | :heavy_check_mark:           |
 
 :heavy_check_mark: – tested, works
 :heavy_multiplication_x: – not implemented
 :question: – not tested
 
 `*`: Sway system mode requires restarting the system service after user logs in for the service to pick up the Sway socket.
+
+`**`: Hyprland feature can be enabled, but the service cannot find a socket
 
 # How to use
 ## As a module
@@ -47,3 +49,15 @@ Following `services.xremap` options are exposed:
 * `userName` – Name of user logging into graphical session
 * `deviceName` – the name of the device to be used. To find out the name, you can check `/proc/bus/input/devices`
 * `watch` – whether to watch for new devices
+
+See examples in `nixosConfigurations` inside flake.nix.
+
+# Developemnt
+
+The nix flake comes with a few VM presets that can be used to test some of the combinations. To run a specific VM:
+
+```shell
+nix run '.#nixosConfigurations.hyprland-user-dev.config.system.build.vm
+```
+
+where `hyprland-user-dev` is the name of the `nixosConfiguration` you want to launch

@@ -4,7 +4,7 @@ xremap: naersk: { pkgs, config, ... }:
 let
   cfg = config.services.xremap;
   naersk-lib = pkgs.callPackage naersk { };
-  package = (import ../overlay xremap naersk-lib pkgs { inherit (cfg) withSway withGnome withX11; }).xremap-unwrapped;
+  package = (import ../overlay xremap naersk-lib pkgs { inherit (cfg) withSway withGnome withX11 withHypr; }).xremap-unwrapped;
 in
 with pkgs.lib;
 {
@@ -32,6 +32,7 @@ with pkgs.lib;
     withSway = mkEnableOption "support for Sway";
     withGnome = mkEnableOption "support for Gnome";
     withX11 = mkEnableOption "support for X11";
+    withHypr = mkEnableOption "support for Hyprland";
     package = mkOption {
       type = types.package;
       default = package;

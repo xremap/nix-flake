@@ -41,7 +41,8 @@ in
       # Hacky way to allow sway socket
       # Systemd does not support wildcards :(
       InaccessiblePaths = lib.mkIf (cfg.withSway) (map (x: "-${userPath}/${x}") [ "app" "bus" "dbus-1" ".dbus-proxy" "dconf" "env-vars" ".flatpak" ".flatpak-helper" "gnupg" "pipewire-0" "pipewire-0.lock" "pulse" "systemd" "tmux-${toString cfg.userId}" "wayland-1" "wayland-1.lock" ]);
-      PrivateTmp = true;
+      # Looks like Hyprland socket is hardcoded to be in tmp
+      PrivateTmp = cfg.withHypr;
       ProtectKernelLogs = true;
       # Does not work, running as root
       # ProtectProc = true;
