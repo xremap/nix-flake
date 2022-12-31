@@ -8,11 +8,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1671841202,
-        "narHash": "sha256-w6vfVa6gj48YWjK+GUezq5U3UkvvGo/DEzdhAmr9Mhw=",
+        "lastModified": 1672510982,
+        "narHash": "sha256-fxpb2GM2Zi4DU119b7c1g8RN/jF7WXD5UcjXN7lxPJ8=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "d87d2dac0b1385a4ab944df293bc48877564106c",
+        "rev": "7525818097f92a99b2b8d02ea43bd0f8ccabd51c",
         "type": "github"
       },
       "original": {
@@ -90,11 +90,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1671877799,
-        "narHash": "sha256-jjC0NtPOT4huSwyichdrKHVCjuGr1al7Wu6PcHo5XZs=",
+        "lastModified": 1672428209,
+        "narHash": "sha256-eejhqkDz2cb2vc5VeaWphJz8UXNuoNoM8/Op8eWv2tQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8351f271f85dae1ee28269028acde661e60394dd",
+        "rev": "293a28df6d7ff3dec1e61e37cc4ee6e6c0fb0847",
         "type": "github"
       },
       "original": {
@@ -104,11 +104,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1671877799,
-        "narHash": "sha256-jjC0NtPOT4huSwyichdrKHVCjuGr1al7Wu6PcHo5XZs=",
+        "lastModified": 1672428209,
+        "narHash": "sha256-eejhqkDz2cb2vc5VeaWphJz8UXNuoNoM8/Op8eWv2tQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8351f271f85dae1ee28269028acde661e60394dd",
+        "rev": "293a28df6d7ff3dec1e61e37cc4ee6e6c0fb0847",
         "type": "github"
       },
       "original": {
@@ -169,16 +169,16 @@
     "xremap": {
       "flake": false,
       "locked": {
-        "lastModified": 1671729394,
-        "narHash": "sha256-tx6/j6ld9M2ihyqfBJDrvCOi38Wsml5+Z299HzHz7QE=",
+        "lastModified": 1672210999,
+        "narHash": "sha256-Is/5fySlGm2XGVLbI+3TIZG3Nr5v5bEMoEckP9ZWh+0=",
         "owner": "k0kubun",
         "repo": "xremap",
-        "rev": "0c00d5c8c4304883de9a351ceb37b72c1d5820a2",
+        "rev": "a8ad29bf7f7adfff34a07a7c188b485930cc45e4",
         "type": "github"
       },
       "original": {
         "owner": "k0kubun",
-        "ref": "v0.7.13",
+        "ref": "v0.7.15",
         "repo": "xremap",
         "type": "github"
       }
