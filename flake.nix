@@ -8,7 +8,7 @@
     naersk.url = "github:nmattia/naersk/master";
     # The Rust source for xremap
     xremap = {
-      url = "github:k0kubun/xremap?ref=v0.8.0";
+      url = "github:k0kubun/xremap?ref=v0.8.1";
       flake = false;
     };
     hyprland = {
