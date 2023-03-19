@@ -83,9 +83,9 @@
                       };
                     }
                     {
-                      name = "Test remap c>d everywhere";
+                      name = "Test remap 9>0 everywhere";
                       remap = {
-                        "x" = "z";
+                        "9" = "0";
                       };
                     }
                   ];
