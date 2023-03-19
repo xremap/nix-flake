@@ -68,6 +68,7 @@
             self.nixosModules.default
             ./nixosConfigurations/vm-config.nix
             {
+              environment.systemPackages = [ pkgs.kitty ];
               services.xremap = {
                 userName = "alice";
                 config = {
