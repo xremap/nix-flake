@@ -15,7 +15,7 @@
   ];
   services.openssh = {
     enable = true;
-    permitRootLogin = "yes";
+    settings.PermitRootLogin = "yes";
   };
   virtualisation.qemu.options = [
     # NOTE: Looks like Wayland in QEMU absolutely needs these
