@@ -140,6 +140,27 @@
               ./nixosConfigurations/sway-common.nix
             ] ++ default_modules;
           };
+          gnome-user-dev = nixpkgs.lib.nixosSystem {
+            inherit pkgs system;
+            modules = [
+              {
+                services.xserver.enable = true;
+                services.xserver.displayManager.gdm.enable = true;
+                services.xserver.desktopManager.gnome.enable = true;
+                services.xremap = {
+                  withGnome = true;
+                  serviceMode = "user";
+                };
+                environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator gnomeExtensions.xremap ];
+                services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+                # Autologin
+                services.xserver.displayManager.autoLogin.enable = true;
+                services.xserver.displayManager.autoLogin.user = "alice";
+                systemd.services."getty@tty1".enable = false;
+                systemd.services."autovt@tty1".enable = false;
+              }
+            ] ++ default_modules;
+          };
         };
     };
 }
