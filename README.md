@@ -45,6 +45,9 @@ Following `services.xremap` options are exposed:
 * `withX11` – whether to enable X11 support
 * `package` – which package for xremap to use
 * `config` – configuration for xremap defined as Nix attribute set. See [original repo](https://github.com/k0kubun/xremap) for examples.
+
+    Alternatively raw config in YAML format can be specified in `.yamlConfig` option.
+
 * `userId` – user under which Sway IPC socket runs
 * `userName` – Name of user logging into graphical session
 * `deviceName` – the name of the device to be used. To find out the name, you can check `/proc/bus/input/devices`

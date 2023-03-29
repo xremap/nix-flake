@@ -161,6 +161,45 @@
               }
             ] ++ default_modules;
           };
+          gnome-user-dev-yaml = nixpkgs.lib.nixosSystem {
+            inherit pkgs system;
+            modules = [
+              {
+                services.xserver.enable = true;
+                services.xserver.displayManager.gdm.enable = true;
+                services.xserver.desktopManager.gnome.enable = true;
+                services.xremap = {
+                  withGnome = true;
+                  serviceMode = "user";
+                  config = nixpkgs.lib.mkForce { };
+                  yamlConfig = ''
+                    modmap:
+                      - name: Test press and release
+                        remap:
+                          2:
+                            press:
+                              launch: [ "kitty" ]
+                            release:
+                              launch: [ "kitty" ]
+                  '';
+                };
+                environment.systemPackages = with pkgs; [
+                  gnomeExtensions.appindicator
+                  gnomeExtensions.xremap
+                  xorg.xev
+                  wev
+                  libnotify
+                  kitty
+                ];
+                services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+                # Autologin
+                services.xserver.displayManager.autoLogin.enable = true;
+                services.xserver.displayManager.autoLogin.user = "alice";
+                systemd.services."getty@tty1".enable = false;
+                systemd.services."autovt@tty1".enable = false;
+              }
+            ] ++ default_modules;
+          };
         };
     };
 }

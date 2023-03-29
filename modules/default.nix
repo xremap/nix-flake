@@ -39,10 +39,8 @@ with pkgs.lib;
     };
     config = mkOption {
       type = types.attrs;
-      description = "Xremap configuration. See xremap repo for examples";
-      default = {
-        modmap = [ ];
-      };
+      description = "Xremap configuration. See xremap repo for examples. Cannot be used together with .yamlConfig";
+      default = { };
       example = ''
         {
           modmap = [
@@ -68,6 +66,30 @@ with pkgs.lib;
             }
           ];
         }
+      '';
+    };
+    yamlConfig = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        The text of yaml config file for xremap. See xremap repo for examples. Cannot be used together with .config.
+      '';
+      example = ''
+        modmap:
+          - name: Except Chrome
+            application:
+              not: Google-chrome
+            remap:
+              CapsLock: Esc
+        keymap:
+          - name: Emacs binding
+            application:
+              only: Slack
+            remap:
+              C-b: left
+              C-f: right
+              C-p: up
+              C-n: down
       '';
     };
     userId = mkOption {

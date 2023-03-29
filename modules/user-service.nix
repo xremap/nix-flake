@@ -4,7 +4,9 @@ let
   cfg = config.services.xremap;
   configFile = pkgs.writeTextFile {
     name = "xremap-config.yml";
-    text = pkgs.lib.generators.toYAML { } cfg.config;
+    text =
+      assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { }));
+      if cfg.yamlConfig == "" then pkgs.lib.generators.toYAML { } cfg.config else cfg.yamlConfig;
   };
 in
 {
