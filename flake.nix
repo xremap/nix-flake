@@ -173,14 +173,13 @@
                   serviceMode = "user";
                   config = nixpkgs.lib.mkForce { };
                   yamlConfig = ''
-                    modmap:
+                    keymap:
                       - name: Test press and release
                         remap:
-                          2:
-                            press:
-                              launch: [ "kitty" ]
-                            release:
-                              launch: [ "kitty" ]
+                          1:
+                            launch: ["${pkgs.bash}/bin/bash", "-c", "env > /tmp/log_xremap_output"]
+                          9:
+                            launch: ["${pkgs.kitty}/bin/kitty"]
                   '';
                 };
                 environment.systemPackages = with pkgs; [
