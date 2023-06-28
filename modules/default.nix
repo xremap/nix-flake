@@ -1,13 +1,11 @@
-# Only the sources (xremap, naersk) are needed, since they will use pkgs and the system defined outside the module
-xremap: naersk: { pkgs, config, ... }:
-
+# localFlake and withSystem allow passing flake to the module through importApply
+# See https://flake.parts/define-module-in-separate-file.html
+{ localFlake, withSystem }:
+{ lib, config, ... }:
 let
   cfg = config.services.xremap;
-  naersk-lib = pkgs.callPackage naersk { };
-  package = (import ../overlay xremap naersk-lib pkgs { inherit (cfg) withSway withGnome withX11 withHypr; }).xremap-unwrapped;
 in
-with pkgs.lib;
-{
+with lib; {
   imports = [
     ./user-service.nix
     ./system-service.nix
@@ -35,7 +33,18 @@ with pkgs.lib;
     withHypr = mkEnableOption "support for Hyprland";
     package = mkOption {
       type = types.package;
-      default = package;
+      default = withSystem ({ config, ... }:
+        if cfg.withSway then
+          config.packages.xremap-sway
+        else if cfg.withGnome then
+          config.packages.xremap-gnome
+        else if cfg.withX11 then
+          config.packages.xremap-x11
+        else if cfg.withHypr then
+          config.packages.xremap-hypr
+        else
+          config.packages.xremap
+      );
     };
     config = mkOption {
       type = types.attrs;

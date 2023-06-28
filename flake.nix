@@ -81,9 +81,7 @@
             };
           };
         flake = {
-          # nixosModules = {
-          #   nixosModules.default = importApply ./modules { localFlake = self; inherit withSystem; };
-          # };
+          nixosModules.default = importApply ./modules { localFlake = self; inherit withSystem; };
         };
       }
     );
