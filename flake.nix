@@ -30,18 +30,21 @@
       {
         imports = [
           inputs.devshell.flakeModule
+          inputs.flake-parts.flakeModules.easyOverlay
         ];
         systems = [
           "x86_64-linux"
           "aarch64-linux"
         ];
-        perSystem = { self', inputs', pkgs, system, ... }:
+        perSystem = { config, self', inputs', pkgs, system, ... }:
           let
             naersk-lib = pkgs.callPackage inputs.naersk { };
           in
           {
             formatter = pkgs.nixpkgs-fmt;
             packages = import ./overlay { inherit (inputs) xremap; inherit naersk-lib pkgs; };
+            # This way all packages get immediately added to the overlay except for the one called literally called "default"
+            overlayAttrs = builtins.removeAttrs config.packages [ "default" ];
             devshells.default = {
               env = [
                 {
