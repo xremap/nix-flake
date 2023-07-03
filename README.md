@@ -44,6 +44,7 @@ Flake implements xremap features that allow specifying per-application remapping
 
 2. Import the `xremap-flake.homeManagerModules.default` module.
 3. Set the [module options](#Configuration) without the user-related settings. This will create a systemd user service with xremap.
+4. [Configure xremap to run without sudo](https://github.com/k0kubun/xremap#usage) by adding your user to `input` group and (optionally) adding the udev rule.
 
 ## Any other configuration
 
