@@ -1,9 +1,10 @@
 # localFlake and withSystem allow passing flake to the module through importApply
 # See https://flake.parts/define-module-in-separate-file.html
 { localFlake, withSystem }:
-{ lib, config, ... }:
+{ pkgs, lib, config, ... }:
 let
   cfg = config.services.xremap;
+  packages' = localFlake.packages.${pkgs.stdenv.hostPlatform.system};
 in
 with lib; {
   imports = [
@@ -33,18 +34,18 @@ with lib; {
     withHypr = mkEnableOption "support for Hyprland";
     package = mkOption {
       type = types.package;
-      default = withSystem ({ config, ... }:
+      default =
         if cfg.withSway then
-          config.packages.xremap-sway
+          packages'.xremap-sway
         else if cfg.withGnome then
-          config.packages.xremap-gnome
+          packages'.xremap-gnome
         else if cfg.withX11 then
-          config.packages.xremap-x11
+          packages'.xremap-x11
         else if cfg.withHypr then
-          config.packages.xremap-hypr
+          packages'.xremap-hypr
         else
-          config.packages.xremap
-      );
+          packages'.xremap
+      ;
     };
     config = mkOption {
       type = types.attrs;
