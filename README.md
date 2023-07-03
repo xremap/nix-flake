@@ -20,7 +20,7 @@ Flake implements xremap features that allow specifying per-application remapping
 `**`: Hyprland feature can be enabled, but the service cannot find a socket
 
 # How to use
-## As a module
+## On NixOS
 
 1. Add following to your `flake.nix`:
 
@@ -32,6 +32,20 @@ Flake implements xremap features that allow specifying per-application remapping
 
 2. Import the `xremap-flake.nixosModules.default` module.
 3. Configure the [module options](#Configuration)
+
+## Using home-manager on non-NixOS system
+1. Add following to your `flake.nix`:
+
+    ```nix
+    {
+        inputs.xremap-flake.url = "github:xremap/nix-flake";
+    }
+    ```
+
+2. Import the `xremap-flake.homeManagerModules.default` module.
+3. Set the [module options](#Configuration) without the user-related settings. This will create a systemd user service with xremap.
+
+## Any other configuration
 
 Alternatively, one of the flake packages (see `nix flake show github:xremap/nix-flake`) can be used with `nix run` to launch xremap with the corresponding feature.
 
