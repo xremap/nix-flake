@@ -55,7 +55,13 @@ in
     } // { _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input."; };
   # sway-user = abort "Tested ad-hoc";
   # gnome-system = abort "Tested ad-hoc";
-  # gnome-user = abort "Tested ad-hoc";
+  gnome-user = mkDevSystem
+    {
+      hostName = "gnome-user";
+      customModules = [
+        ./gnome-common.nix
+      ];
+    } // { _comment = "Enable the xremap Gnome extension manually."; };
   # x11-system = abort "Tested ad-hoc";
   # x11-user = abort "Tested ad-hoc";
   # hypr-system = abort "Not implemented";
