@@ -16,6 +16,7 @@
     hyprland = {
       url = "github:hyprwm/Hyprland";
     };
+    home-manager.url = "github:nix-community/home-manager";
   };
   outputs =
     inputs@{ flake-parts
@@ -73,7 +74,35 @@
                     done
                   '';
                 }
-              ];
+                {
+                  help = "SSH into the dev VM. Disregards the known hosts file";
+                  name = "vm-ssh";
+                  command = ''ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -p 64022 alice@localhost'';
+                }
+              ]
+              ++
+              (
+                # Construct runners for all development VMs
+                let
+                  definedVMs = self.nixosConfigurations;
+                  namesOfVMs = builtins.attrNames definedVMs;
+                  getVMcomment = vmName:
+                    if builtins.hasAttr "_comment" definedVMs.${vmName}
+                    then definedVMs.${vmName}._comment
+                    else "";
+                in
+                map
+                  (nixosSystem: {
+                    help = "Run VM for testing ${nixosSystem}";
+                    name = "vm-run-${nixosSystem}";
+                    command = ''
+                      echo "Launching VM"
+                      echo "${getVMcomment nixosSystem}"
+                      nix run .#nixosConfigurations.${nixosSystem}.config.system.build.vm
+                    '';
+                  })
+                  namesOfVMs
+              );
               packages = builtins.attrValues {
                 inherit (pkgs) cargo rustc rustfmt;
                 inherit (pkgs.rustPackages) clippy;
@@ -82,6 +111,7 @@
           };
         flake = {
           nixosModules.default = importApply ./modules { localFlake = self; inherit withSystem; };
+          nixosConfigurations = import ./nixosConfigurations { localFlake = self; inherit inputs; };
         };
       }
     );
