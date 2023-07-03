@@ -4,6 +4,8 @@
   inputs = {
     # Nixpkgs will be pinned to unstable to get the latest Rust
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    devshell.url = "github:numtide/devshell";
     # Utils for building Rust stuff
     naersk.url = "github:nmattia/naersk/master";
     # The Rust source for xremap
@@ -14,191 +16,103 @@
     hyprland = {
       url = "github:hyprwm/Hyprland";
     };
+    home-manager.url = "github:nix-community/home-manager";
   };
-  outputs = { self, nixpkgs, naersk, xremap, hyprland }:
-    let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
-    in
-    rec
-    {
-      packages = forAllSystems (system:
-        let
-          pkgs = nixpkgsFor.${system};
-          naersk-lib = pkgs.callPackage naersk { };
-        in
-        {
-          default = (import ./overlay xremap naersk-lib pkgs { }).xremap-unwrapped;
-        }
-      );
-      apps = forAllSystems (system:
-        let
-          pkgs = nixpkgsFor.${system};
-          naersk-lib = pkgs.callPackage naersk { };
-          package = (import ./overlay xremap naersk-lib pkgs { }).xremap-unwrapped;
-        in
-        {
-          default = {
-            type = "app";
-            program = "${package}/bin/xremap";
-          };
-        }
-      );
-      devShells = forAllSystems
-        (system:
+  outputs =
+    inputs@{ flake-parts
+    , self
+    , ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { withSystem, flake-parts-lib, ... }:
+      let
+        inherit (flake-parts-lib) importApply;
+      in
+      {
+        imports = [
+          inputs.devshell.flakeModule
+          inputs.flake-parts.flakeModules.easyOverlay
+        ];
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
+        perSystem = { config, self', inputs', pkgs, system, ... }:
           let
-            pkgs = nixpkgsFor.${system};
+            naersk-lib = pkgs.callPackage inputs.naersk { };
           in
           {
-            default =
-              with pkgs; mkShell {
-                buildInputs = [ cargo rustc rustfmt rustPackages.clippy ];
-                RUST_SRC_PATH = rustPlatform.rustLibSrc;
-              };
-          }
-        );
+            formatter = pkgs.nixpkgs-fmt;
+            packages = import ./overlay { inherit (inputs) xremap; inherit naersk-lib pkgs; };
+            # This way all packages get immediately added to the overlay except for the one called literally called "default"
+            overlayAttrs = builtins.removeAttrs config.packages [ "default" ];
+            devshells.default = {
+              env = [
+                {
+                  name = "RUST_SRC_PATH";
+                  value = pkgs.rustPlatform.rustLibSrc;
+                }
+              ];
+              commands = [
+                {
+                  help = "Build xremap (no features)";
+                  name = "build-xremap-no-features";
+                  command = "nix build .#";
+                }
+                {
+                  help = "Build xremap with features one by one";
+                  name = "test-build-all-features";
+                  command = ''
+                    set -euo pipefail
 
-      # See comments in the module
-      nixosModules.default = import ./modules xremap naersk;
+                    features=( "gnome" "hypr" "sway" "x11" )
 
-      nixosConfigurations =
-        let
-          default_modules = [
-            self.nixosModules.default
-            ./nixosConfigurations/vm-config.nix
-            {
-              environment.systemPackages = [ pkgs.kitty ];
-              services.xremap = {
-                userName = "alice";
-                config = {
-                  keymap = [
-                    {
-                      name = "Test remap a>b in kitty";
-                      application = {
-                        "only" = "kitty";
-                      };
-                      remap = {
-                        "a" = "b";
-                      };
-                    }
-                    {
-                      name = "Test remap 9>0 everywhere";
-                      remap = {
-                        "9" = "0";
-                      };
-                    }
-                  ];
-                };
-              };
-            }
-          ];
-          system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          hyprland-system-dev = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              hyprland.nixosModules.default
-              {
-                boot.tmpOnTmpfs = true; # To clean out hyprland socket
-                networking.hostName = "hyprland-system-dev";
-                programs.hyprland = {
-                  enable = true;
-                };
-                services.xremap = {
-                  withHypr = true;
-                };
-              }
-            ] ++ default_modules;
-          };
-          hyprland-user-dev = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              hyprland.nixosModules.default
-              {
-                boot.tmpOnTmpfs = true; # To clean out hyprland socket
-                networking.hostName = "hyprland-user-dev";
-                programs.hyprland = {
-                  enable = true;
-                };
-                services.xremap = {
-                  withHypr = true;
-                  serviceMode = "user";
-                };
-              }
-            ] ++ default_modules;
-          };
-          # NOTE: after alice is logged in - need to run systemctl restart xremap.service to pick up the socket
-          sway-system-dev = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              {
-                programs.sway.enable = true;
-              }
-              ./nixosConfigurations/sway-common.nix
-            ] ++ default_modules;
-          };
-          gnome-user-dev = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              {
-                services.xserver.enable = true;
-                services.xserver.displayManager.gdm.enable = true;
-                services.xserver.desktopManager.gnome.enable = true;
-                services.xremap = {
-                  withGnome = true;
-                  serviceMode = "user";
-                };
-                environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator gnomeExtensions.xremap ];
-                services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-                # Autologin
-                services.xserver.displayManager.autoLogin.enable = true;
-                services.xserver.displayManager.autoLogin.user = "alice";
-                systemd.services."getty@tty1".enable = false;
-                systemd.services."autovt@tty1".enable = false;
-              }
-            ] ++ default_modules;
-          };
-          gnome-user-dev-yaml = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              {
-                services.xserver.enable = true;
-                services.xserver.displayManager.gdm.enable = true;
-                services.xserver.desktopManager.gnome.enable = true;
-                services.xremap = {
-                  withGnome = true;
-                  serviceMode = "user";
-                  config = nixpkgs.lib.mkForce { };
-                  yamlConfig = ''
-                    keymap:
-                      - name: Test press and release
-                        remap:
-                          1:
-                            launch: ["${pkgs.bash}/bin/bash", "-c", "env > /tmp/log_xremap_output"]
-                          9:
-                            launch: ["${pkgs.kitty}/bin/kitty"]
+                    for feature in "''${features[@]}"; do
+                      echo "Building feature $feature"
+                      nix build .#xremap-''${feature}
+                      echo "Build successful"
+                    done
                   '';
-                };
-                environment.systemPackages = with pkgs; [
-                  gnomeExtensions.appindicator
-                  gnomeExtensions.xremap
-                  xorg.xev
-                  wev
-                  libnotify
-                  kitty
-                ];
-                services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-                # Autologin
-                services.xserver.displayManager.autoLogin.enable = true;
-                services.xserver.displayManager.autoLogin.user = "alice";
-                systemd.services."getty@tty1".enable = false;
-                systemd.services."autovt@tty1".enable = false;
-              }
-            ] ++ default_modules;
+                }
+                {
+                  help = "SSH into the dev VM. Disregards the known hosts file";
+                  name = "vm-ssh";
+                  command = ''ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -p 64022 alice@localhost'';
+                }
+              ]
+              ++
+              (
+                # Construct runners for all development VMs
+                let
+                  definedVMs = self.nixosConfigurations;
+                  namesOfVMs = builtins.attrNames definedVMs;
+                  getVMcomment = vmName:
+                    if builtins.hasAttr "_comment" definedVMs.${vmName}
+                    then definedVMs.${vmName}._comment
+                    else "";
+                in
+                map
+                  (nixosSystem: {
+                    help = "Run VM for testing ${nixosSystem}";
+                    name = "vm-run-${nixosSystem}";
+                    command = ''
+                      echo "Launching VM"
+                      echo "${getVMcomment nixosSystem}"
+                      nix run .#nixosConfigurations.${nixosSystem}.config.system.build.vm
+                    '';
+                  })
+                  namesOfVMs
+              );
+              packages = builtins.attrValues {
+                inherit (pkgs) cargo rustc rustfmt;
+                inherit (pkgs.rustPackages) clippy;
+              };
+            };
           };
+        flake = {
+          nixosModules.default = importApply ./modules { localFlake = self; inherit withSystem; };
+          nixosConfigurations = import ./nixosConfigurations { localFlake = self; inherit inputs; };
         };
-    };
+      }
+    );
 }

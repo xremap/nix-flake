@@ -1,17 +1,22 @@
 # Overlay file that contains the definition of building a package
-xremap: naersk-lib: pkgs: { withSway ? false, withGnome ? false, withX11 ? false, withHypr ? false }:
-{
-  xremap-unwrapped = naersk-lib.buildPackage rec {
-    # Used in this context, "xremap" will translate to the path in the store where the source was downloaded
+{ xremap, naersk-lib, pkgs }:
+let
+  packageWithFeature = feature: naersk-lib.buildPackage {
     root = xremap;
-    cargoBuildOptions = with pkgs.lib;
-      (x:
-        x ++ optional (builtins.any (x: x == true) [ withSway withGnome withHypr ]) "--features \"${ if withSway then "sway" else ""} ${if withGnome then "gnome" else ""} ${ if withX11 then "x11" else ""} ${ if withHypr then "hypr" else ""}\""
-      );
+    cargoBuildOptions = (x: x ++ pkgs.lib.optional (feature != null) "--features ${feature}");
     # The following two options are for introspection to be able to see if sway/gnome were actually pulled in
     # To see that - visually inspect the deps directory inside result/target/ and check for swayipc/zbus
     # See cargo.toml for feature-specific deps
-    /* copyTarget = true; */
-    /* compressTarget = false; */
+    copyTarget = true;
+    compressTarget = false;
   };
+in
+rec {
+  # No features
+  default = xremap;
+  xremap = packageWithFeature null;
+  xremap-sway = packageWithFeature "sway";
+  xremap-gnome = packageWithFeature "gnome";
+  xremap-x11 = packageWithFeature "x11";
+  xremap-hypr = packageWithFeature "hypr";
 }

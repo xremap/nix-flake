@@ -1,18 +1,24 @@
 # NOTE: modulesPath and imports are taken from nixpkgs#59219
+# Most of this file is very specific to running a dev VM for this project
 { modulesPath, pkgs, lib, ... }: {
   imports = [ (modulesPath + "/virtualisation/qemu-vm.nix") ];
   users.users.root.password = "root";
   users.users.alice = {
     password = "hunter2";
     isNormalUser = true;
+    extraGroups = [ "wheel" "video" "tty" ];
   };
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
   virtualisation.graphics = true;
   documentation.enable = false;
   virtualisation.forwardPorts = [
     # SSH
     { from = "host"; host.port = 64022; guest.port = 22; }
   ];
+  security.sudo = {
+    wheelNeedsPassword = false;
+    execWheelOnly = true;
+  };
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "yes";
