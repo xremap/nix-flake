@@ -8,7 +8,7 @@ Flake implements xremap features that allow specifying per-application remapping
 
 | Scenario | No features | Sway | Gnome | X11 | Hyprland |
 | - | - | - | - | - | - |
-| System | :heavy_check_mark: | :heavy_check_mark:`*` | :heavy_multiplication_x: | :question: | :heavy_multiplication_x:`**` |
+| System | :heavy_check_mark: | :heavy_check_mark:`*` | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x:`**` |
 | User   | :heavy_check_mark: | :heavy_check_mark:    | :heavy_check_mark:       | :question: | :heavy_check_mark:           |
 
 :heavy_check_mark: – tested, works
