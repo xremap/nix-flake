@@ -62,7 +62,22 @@ in
         ./gnome-common.nix
       ];
     } // { _comment = "Enable the xremap Gnome extension manually."; };
-  # x11-system = abort "Tested ad-hoc";
+  x11-system = mkDevSystem
+    {
+      hostName = "x11-system";
+      customModules = [
+        # Autologin
+        { services.getty.autologinUser = "alice"; }
+        {
+          services.xserver = {
+            autorun = false;
+            displayManager.startx.enable = true;
+            enable = true;
+            windowManager.openbox.enable = true;
+          };
+        }
+      ];
+    } // { _comment = "Run startx after autologin."; };
   # x11-user = abort "Tested ad-hoc";
   # hypr-system = abort "Not implemented";
   hypr-user = mkDevSystem
