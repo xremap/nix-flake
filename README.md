@@ -33,6 +33,40 @@ Flake implements xremap features that allow specifying per-application remapping
 2. Import the `xremap-flake.nixosModules.default` module.
 3. Configure the [module options](#Configuration)
 
+<details>
+  <summary>Sample config</summary>
+  
+  Assuming flake-managed machine with hostname `nixos`:
+  
+  ```nix
+  # flake.nix
+  {
+    inputs.xremap-flake.url = "github:xremap/nix-flake";
+    outputs = inputs@{ ... }: {
+      nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          inputs.xremap-flake.nixosModules.default
+          {
+            services.xremap = {
+              userName = "alice";  # run as a systemd service in alice
+              serviceMode = "user";  # run xremap as user
+              config = {
+                modmap = [
+                  name = "Global";
+                  remap = { "CapsLock" = "Esc"; };  # globally remap CapsLock to Esc
+                ];
+              };
+            };
+          }
+        ];
+        # < the rest of configuration >
+      };
+    };
+  }
+  ```
+</details>
+
 ## Using home-manager on non-NixOS system
 1. Add following to your `flake.nix`:
 
