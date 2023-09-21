@@ -9,6 +9,7 @@ let
     # See cargo.toml for feature-specific deps
     copyTarget = true;
     compressTarget = false;
+    meta.mainProgram = "xremap";
   };
 in
 rec {
