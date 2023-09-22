@@ -1,0 +1,17 @@
+name: "Build all packages using Nix"
+on:
+  push:
+jobs:
+  nix-checks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v22
+    # Maybe TODO
+    # - run: nix flake check
+    # Explicitly build all features
+    - run: nix build .#
+    - run: nix build .#xremap-gnome
+    - run: nix build .#xremap-hypr
+    - run: nix build .#xremap-sway
+    - run: nix build .#xremap-x11
