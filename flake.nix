@@ -113,6 +113,7 @@
           nixosModules.default = importApply ./modules { localFlake = self; inherit withSystem; };
           homeManagerModules.default = importApply ./homeManagerModules { localFlake = self; inherit withSystem; };
           nixosConfigurations = import ./nixosConfigurations { localFlake = self; inherit inputs; };
+          localLib = import ./lib { localFlake = self; };
         };
       }
     );
