@@ -1,13 +1,8 @@
+{ mkExecStart, configFile }:
 { pkgs, lib, config, ... }:
 
 let
   cfg = config.services.xremap;
-  configFile = pkgs.writeTextFile {
-    name = "xremap-config.yml";
-    text =
-      assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { }));
-      if cfg.yamlConfig == "" then pkgs.lib.generators.toYAML { } cfg.config else cfg.yamlConfig;
-  };
 in
 {
   config = lib.mkIf (cfg.serviceMode == "user") {
@@ -54,9 +49,7 @@ in
         UMask = "077";
         RestrictAddressFamilies = "AF_UNIX";
         # Environment = "RUST_LOG=debug";
-        ExecStart = ''
-          ${cfg.package}/bin/xremap ${if cfg.deviceName != "" then "--device \"${cfg.deviceName}\"" else ""} ${if cfg.watch then "--watch" else ""} ${configFile}
-        '';
+        ExecStart = mkExecStart configFile;
       };
     };
   };
