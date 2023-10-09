@@ -117,4 +117,8 @@ in
         { services.xremap = { withHypr = true; serviceMode = "user"; }; }
       ];
     } // { _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test."; };
+  testAssertFail = mkDevSystem {
+    hostName = "testAssertFail";
+    customModules = [{ services.xremap.config = pkgs.lib.mkForce { }; }];
+  };
 }
