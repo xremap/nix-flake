@@ -53,8 +53,10 @@ Flake implements xremap features that allow specifying per-application remapping
               serviceMode = "user";  # run xremap as user
               config = {
                 modmap = [
-                  name = "Global";
-                  remap = { "CapsLock" = "Esc"; };  # globally remap CapsLock to Esc
+                  {
+                      name = "Global";
+                      remap = { "CapsLock" = "Esc"; };  # globally remap CapsLock to Esc
+                  }
                 ];
               };
             };
