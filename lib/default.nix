@@ -15,7 +15,7 @@ in
     package = mkOption {
       type = types.package;
       default =
-        assert (cfg.withKDE -> cfg.serviceMode != "user") || throw "Upstream does not support running withKDE as root";
+        assert (cfg.withKDE -> cfg.serviceMode == "user") || throw "Upstream does not support running withKDE as root";
         if cfg.withWlroots then
           selfPkgs'.xremap-wlroots
         else if cfg.withSway then
