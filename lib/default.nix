@@ -15,7 +15,10 @@ in
     package = mkOption {
       type = types.package;
       default =
-        assert (cfg.withKDE -> cfg.serviceMode == "user") || throw "Upstream does not support running withKDE as root";
+        assert (cfg.withKDE -> (
+          # TODO: if some other place would need checking that it's a home manager module. If so -- add a "_hm" parameter to the module.
+          !(builtins.hasAttr "serviceMode" cfg) || (cfg.serviceMode == "user")  # First check that "serviceMode" is present in the config. If not -- it's home manager module.
+        )) || throw "Upstream does not support running withKDE as root";
         if cfg.withWlroots then
           selfPkgs'.xremap-wlroots
         else if cfg.withSway then
