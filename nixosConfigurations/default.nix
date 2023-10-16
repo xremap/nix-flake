@@ -53,6 +53,25 @@ in
         ./sway-common.nix
       ];
     } // { _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input."; };
+  sway-wlroots-system = mkDevSystem
+    {
+      hostName = "sway-wlroots-system";
+      customModules = [
+        # Autologin
+        { services.getty.autologinUser = "alice"; }
+        # Sway
+        {
+          programs.sway.enable = true;
+        }
+        ./sway-common.nix
+        {
+          services.xremap = {
+            withSway = pkgs.lib.mkForce false;
+            withWlroots = true;
+          };
+        }
+      ];
+    } // { _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input."; };
   # sway-user = abort "Tested ad-hoc";
   # gnome-system = abort "Tested ad-hoc";
   gnome-user = mkDevSystem
