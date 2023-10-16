@@ -97,6 +97,19 @@ in
       assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { })) || throw "Xremap's config needs to be specified either in .yamlConfig or in .config";
       if cfg.yamlConfig == "" then pkgs.lib.generators.toYAML { } cfg.config else cfg.yamlConfig;
   };
-  mkExecStart = configFile: "${lib.getExe cfg.package} ${if cfg.deviceName != "" then "--device \"${cfg.deviceName}\"" else ""} ${if cfg.watch then "--watch" else ""} ${if cfg.mouse then "--mouse" else ""} ${configFile}";
-
+  mkExecStart = configFile:
+    builtins.concatStringsSep " "
+      (lib.flatten
+        (
+          lib.lists.singleton "${lib.getExe cfg.package}"
+          ++
+          lib.optional (cfg.deviceName != "") "--device \"${cfg.deviceName}\""
+          ++
+          lib.optional cfg.watch "--watch"
+          ++
+          lib.optional cfg.mouse "--watch"
+          ++
+          lib.lists.singleton "${lib.getExe cfg.package}"
+        )
+      );
 }
