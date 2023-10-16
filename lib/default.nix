@@ -96,7 +96,7 @@ in
     mouse = mkEnableOption "watching mice by default";
     extraArgs = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       example = [ "--completions zsh" ];
       description = "Extra arguments for xremap";
     };
