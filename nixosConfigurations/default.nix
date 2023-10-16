@@ -103,37 +103,13 @@ in
     {
       hostName = "hypr-user";
       customModules = [
-        # Makes the hyprland socket cleanup easy
-        # { boot.tmp.useTmpfs = true; }
         # Autologin
         { services.getty.autologinUser = "alice"; }
         inputs.hyprland.nixosModules.default
-        {
-          programs.hyprland = {
-            package = inputs.hyprland.packages.${system}.default;
-            enable = true;
-          };
-          hardware.opengl.enable = true;
-        }
         inputs.home-manager.nixosModules.home-manager
-        {
-          home-manager =
-            {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.alice = { ... }: {
-                imports = [ inputs.hyprland.homeManagerModules.default ];
-                home.stateVersion = "23.05";
-                wayland.windowManager.hyprland =
-                  {
-                    enable = true;
-                    # Makes xremap auto-start with hyprland
-                    systemdIntegration = true;
-                  };
-              };
-            };
-        }
+        { home-manager = { users.alice = { ... }: { imports = [ inputs.hyprland.homeManagerModules.default ]; }; }; }
         { services.xremap = { withHypr = true; serviceMode = "user"; }; }
+        ./hypr-common.nix
       ];
     } // { _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test."; };
   testAssertFail = mkDevSystem {
