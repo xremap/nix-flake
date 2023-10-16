@@ -16,6 +16,7 @@ rec {
   # No features
   default = xremap;
   xremap = packageWithFeature null;
+  xremap-wlroots = packageWithFeature "wlroots";
   xremap-sway = packageWithFeature "sway";
   xremap-gnome = packageWithFeature "gnome";
   xremap-x11 = packageWithFeature "x11";

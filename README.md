@@ -91,9 +91,10 @@ Alternatively, one of the flake packages (see `nix flake show github:xremap/nix-
 Following `services.xremap` options are exposed:
 
 * `serviceMode` – whether to run as user or system
-* `withSway` – whether to enable Sway support
+* `withWlroots` – whether to enable wlroots-based compositor support (Sway, Hyprland, etc.)
+* `withSway` – whether to enable Sway support (consider using `withWlroots`, according to upstream)
 * `withGnome` – whether to enable Gnome support
-* `withHypr` – whether to enable Hyprland support
+* `withHypr` – whether to enable Hyprland support (consider using `withWlroots`, according to upstream)
 * `withX11` – whether to enable X11 support
 * `package` – which package for xremap to use
 * `config` – configuration for xremap defined as Nix attribute set. See [original repo](https://github.com/k0kubun/xremap) for examples.
