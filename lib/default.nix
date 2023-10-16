@@ -11,9 +11,11 @@ in
     withX11 = mkEnableOption "support for X11";
     withHypr = mkEnableOption "support for Hyprland (consider switching to wlroots)";
     withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, Hyprland, etc.)";
+    withKDE = mkEnableOption "support KDE-Plasma Wayland";
     package = mkOption {
       type = types.package;
       default =
+        assert (cfg.withKDE -> cfg.serviceMode != "user") || throw "Upstream does not support running withKDE as root";
         if cfg.withWlroots then
           selfPkgs'.xremap-wlroots
         else if cfg.withSway then
@@ -24,6 +26,8 @@ in
           selfPkgs'.xremap-x11
         else if cfg.withHypr then
           selfPkgs'.xremap-hypr
+        else if cfg.withKDE then
+          selfPkgs'.xremap-kde
         else
           selfPkgs'.xremap
       ;

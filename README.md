@@ -96,6 +96,7 @@ Following `services.xremap` options are exposed:
 * `withGnome` – whether to enable Gnome support
 * `withHypr` – whether to enable Hyprland support (consider using `withWlroots`, according to upstream)
 * `withX11` – whether to enable X11 support
+* `withKDE` – whether to enable KDE wayland support
 * `package` – which package for xremap to use
 * `config` – configuration for xremap defined as Nix attribute set. See [original repo](https://github.com/k0kubun/xremap) for examples.
 
