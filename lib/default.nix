@@ -113,7 +113,7 @@ in
           ++
           lib.optional cfg.watch "--watch"
           ++
-          lib.optional cfg.mouse "--watch"
+          lib.optional cfg.mouse "--mouse"
           ++
           cfg.extraArgs
           ++
