@@ -90,6 +90,12 @@ in
     };
     watch = mkEnableOption "running xremap watching new devices";
     mouse = mkEnableOption "watching mice by default";
+    extraArgs = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      example = [ "--completions zsh" ];
+      description = "Extra arguments for xremap";
+    };
   };
   configFile = pkgs.writeTextFile {
     name = "xremap-config.yml";
@@ -110,6 +116,8 @@ in
           lib.optional cfg.mouse "--watch"
           ++
           lib.lists.singleton "${lib.getExe cfg.package}"
+          ++
+          cfg.extraArgs
         )
       );
 }
