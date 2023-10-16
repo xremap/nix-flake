@@ -6,14 +6,17 @@ let
 in
 {
   commonOptions = with lib; {
-    withSway = mkEnableOption "support for Sway";
+    withSway = mkEnableOption "support for Sway (consider switching to wlroots)";
     withGnome = mkEnableOption "support for Gnome";
     withX11 = mkEnableOption "support for X11";
-    withHypr = mkEnableOption "support for Hyprland";
+    withHypr = mkEnableOption "support for Hyprland (consider switching to wlroots)";
+    withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, Hyprland, etc.)";
     package = mkOption {
       type = types.package;
       default =
-        if cfg.withSway then
+        if cfg.withWlroots then
+          selfPkgs'.xremap-wlroots
+        else if cfg.withSway then
           selfPkgs'.xremap-sway
         else if cfg.withGnome then
           selfPkgs'.xremap-gnome
