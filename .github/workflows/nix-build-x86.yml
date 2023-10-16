@@ -14,6 +14,7 @@ jobs:
     # - run: nix flake check
     # Explicitly build all features
     - run: nix build .#
+    - run: nix build .#xremap-wlroots
     - run: nix build .#xremap-gnome
     - run: nix build .#xremap-hypr
     - run: nix build .#xremap-sway
