@@ -115,9 +115,9 @@ in
           ++
           lib.optional cfg.mouse "--watch"
           ++
-          lib.lists.singleton configFile
-          ++
           cfg.extraArgs
+          ++
+          lib.lists.singleton configFile
         )
       );
 }
