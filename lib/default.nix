@@ -115,7 +115,7 @@ in
           ++
           lib.optional cfg.mouse "--watch"
           ++
-          lib.lists.singleton "${lib.getExe cfg.package}"
+          lib.lists.singleton configFile
           ++
           cfg.extraArgs
         )
