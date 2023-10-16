@@ -112,6 +112,19 @@ in
         ./hypr-common.nix
       ];
     } // { _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test."; };
+  hypr-wlroots-user = mkDevSystem
+    {
+      hostName = "hypr-wlroots-user";
+      customModules = [
+        # Autologin
+        { services.getty.autologinUser = "alice"; }
+        inputs.hyprland.nixosModules.default
+        inputs.home-manager.nixosModules.home-manager
+        { home-manager = { users.alice = { ... }: { imports = [ inputs.hyprland.homeManagerModules.default ]; }; }; }
+        { services.xremap = { withWlroots = true; serviceMode = "user"; }; }
+        ./hypr-common.nix
+      ];
+    } // { _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test."; };
   testAssertFail = mkDevSystem {
     hostName = "testAssertFail";
     customModules = [{ services.xremap.config = pkgs.lib.mkForce { }; }];
