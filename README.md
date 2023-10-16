@@ -105,6 +105,7 @@ Following `services.xremap` options are exposed:
 * `userName` – Name of user logging into graphical session
 * `deviceName` – the name of the device to be used. To find out the name, you can check `/proc/bus/input/devices`
 * `watch` – whether to watch for new devices
+* `mouse` – whether to watch for mice by default
 
 See examples in `nixosConfigurations` inside flake.nix.
 

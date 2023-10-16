@@ -89,6 +89,7 @@ in
       description = "Device name which xremap will remap. If not specified - xremap will remap all devices.";
     };
     watch = mkEnableOption "running xremap watching new devices";
+    mouse = mkEnableOption "watching mice by default";
   };
   configFile = pkgs.writeTextFile {
     name = "xremap-config.yml";
@@ -96,6 +97,6 @@ in
       assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { })) || throw "Xremap's config needs to be specified either in .yamlConfig or in .config";
       if cfg.yamlConfig == "" then pkgs.lib.generators.toYAML { } cfg.config else cfg.yamlConfig;
   };
-  mkExecStart = configFile: "${lib.getExe cfg.package} ${if cfg.deviceName != "" then "--device \"${cfg.deviceName}\"" else ""} ${if cfg.watch then "--watch" else ""} ${configFile}";
+  mkExecStart = configFile: "${lib.getExe cfg.package} ${if cfg.deviceName != "" then "--device \"${cfg.deviceName}\"" else ""} ${if cfg.watch then "--watch" else ""} ${if cfg.mouse then "--mouse" else ""} ${configFile}";
 
 }
