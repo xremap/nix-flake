@@ -129,4 +129,11 @@ in
     hostName = "testAssertFail";
     customModules = [{ services.xremap.config = pkgs.lib.mkForce { }; }];
   };
+  kde-wayland-user = mkDevSystem {
+    hostName = "kde-wayland-user";
+    customModules = [
+      { services.xremap = { withKDE = true; serviceMode = "user"; }; }
+      ./kde-common.nix
+    ];
+  };
 }
