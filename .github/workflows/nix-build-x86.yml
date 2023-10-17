@@ -2,8 +2,9 @@ name: "Build all packages using Nix"
 on:
   push:
     paths:
-      # Run <=> .nix files changed
-      - '**.nix'
+      # Run the workflow <=> when relevant files are changed
+      - 'flake.nix'
+      - 'overlay/**.nix'
 jobs:
   nix-checks:
     runs-on: ubuntu-latest
