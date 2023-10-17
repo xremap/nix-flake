@@ -19,6 +19,11 @@ in
           # TODO: if some other place would need checking that it's a home manager module. If so -- add a "_hm" parameter to the module.
           !(builtins.hasAttr "serviceMode" cfg) || (cfg.serviceMode == "user")  # First check that "serviceMode" is present in the config. If not -- it's home manager module.
         )) || throw "Upstream does not support running withKDE as root";
+
+        # Check that 0 or 1 features are enabled, since upstream throws an error otherwise
+        assert (lib.lists.count (x: x == true) (builtins.attrValues { inherit (cfg) withSway withGnome withX11 withHypr withWlroots withKDE; }) <= 1)
+          || throw "Xremap cannot be built with more than one feature. Check that no more than 1 with* feature is enabled";
+
         if cfg.withWlroots then
           selfPkgs'.xremap-wlroots
         else if cfg.withSway then
