@@ -82,6 +82,50 @@ Flake implements xremap features that allow specifying per-application remapping
 3. Set the [module options](#Configuration) without the user-related settings. This will create a systemd user service with xremap.
 4. [Configure xremap to run without sudo](https://github.com/k0kubun/xremap#usage) by adding your user to `input` group and (optionally) adding the udev rule.
 
+<details>
+  <summary>Sample config</summary>
+
+  Assuming flake-managed machine with hostname `nixos` and user `me`:
+
+  ```nix
+  # flake.nix
+  {
+    inputs.xremap-flake.url = "github:xremap/nix-flake";
+    outputs = inputs@{ ... }: {
+      nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.users."me" = {
+              imports = [
+                ./home.nix
+                inputs.xremap-flake.homeManagerModules.default
+                {
+                  services.xremap = {
+                    config = {
+                      modmap = [
+                        {
+                          name = "Global";
+                          remap = {"CapsLock" = "Esc";}; # globally remap CapsLock to Esc
+                        }
+                      ];
+                    # other xremap settings go here
+                    };
+                  };
+                }
+              ];
+            };
+          }
+        ];
+        # < the rest of configuration >
+      };
+    };
+  }
+  ```
+</details>
+
 ## Any other configuration
 
 Alternatively, one of the flake packages (see `nix flake show github:xremap/nix-flake`) can be used with `nix run` to launch xremap with the corresponding feature.
