@@ -7,7 +7,21 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     devshell.url = "github:numtide/devshell";
     # Utils for building Rust stuff
-    naersk.url = "github:nmattia/naersk/master";
+
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # fenix = {
+    #   url = "github:nix-community/fenix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.rust-analyzer-src.follows = "";
+    # };
+    # advisory-db = {
+    #   url = "github:rustsec/advisory-db";
+    #   flake = false;
+    # };
+
     # The Rust source for xremap
     xremap = {
       url = "github:k0kubun/xremap?ref=v0.8.12";
@@ -39,11 +53,11 @@
         ];
         perSystem = { config, self', inputs', pkgs, system, ... }:
           let
-            naersk-lib = pkgs.callPackage inputs.naersk { };
+            craneLib = inputs.crane.lib.${system};
           in
           {
             formatter = pkgs.nixpkgs-fmt;
-            packages = import ./overlay { inherit (inputs) xremap; inherit naersk-lib pkgs; };
+            packages = import ./overlay { inherit (inputs) xremap; inherit craneLib pkgs; };
             # This way all packages get immediately added to the overlay except for the one called literally called "default"
             overlayAttrs = builtins.removeAttrs config.packages [ "default" ];
             devshells.default = {
