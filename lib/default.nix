@@ -27,13 +27,13 @@ in
         if cfg.withWlroots then
           selfPkgs'.xremap-wlroots
         else if cfg.withSway then
-          selfPkgs'.xremap-sway
+          lib.warn "Consider using withWlroots as recommended by upstream" selfPkgs'.xremap-sway
         else if cfg.withGnome then
           selfPkgs'.xremap-gnome
         else if cfg.withX11 then
           selfPkgs'.xremap-x11
         else if cfg.withHypr then
-          selfPkgs'.xremap-hypr
+          lib.warn "Consider using withWlroots as recommended by upstream" selfPkgs'.xremap-hypr
         else if cfg.withKDE then
           selfPkgs'.xremap-kde
         else
