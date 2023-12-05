@@ -108,6 +108,7 @@ in
       example = [ "--completions zsh" ];
       description = "Extra arguments for xremap";
     };
+    debug = mkEnableOption "run xremap with RUST_LOG=debug in case upstream needs logs";
   };
   configFile = pkgs.writeTextFile {
     name = "xremap-config.yml";
