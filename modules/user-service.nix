@@ -2,6 +2,7 @@
 { pkgs, lib, config, ... }:
 
 let
+  inherit (lib) optionalString;
   cfg = config.services.xremap;
 in
 {
@@ -48,7 +49,7 @@ in
         LockPersonality = true;
         UMask = "077";
         RestrictAddressFamilies = "AF_UNIX";
-        # Environment = "RUST_LOG=debug";
+        Environment = optionalString cfg.debug "RUST_LOG=debug";
         ExecStart = mkExecStart configFile;
       };
     };

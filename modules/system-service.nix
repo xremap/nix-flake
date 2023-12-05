@@ -4,6 +4,7 @@
 let
   cfg = config.services.xremap;
   userPath = "/run/user/${toString cfg.userId}";
+  inherit (lib) optionalString;
 in
 {
   systemd.services.xremap = lib.mkIf (cfg.serviceMode == "system") {
@@ -11,6 +12,7 @@ in
     path = [ cfg.package ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
+      Environment = optionalString cfg.debug "RUST_LOG=debug";
       PrivateNetwork = true;
       MemoryDenyWriteExecute = true;
       CapabilityBoundingSet = [ "~CAP_SETUID" "~CAP_SETGID" "~CAP_SETPCAP" "~CAP_SYS_ADMIN" "~CAP_SYS_PTRACE" "~CAP_NET_ADMIN" "~CAP_FOWNER" "~CAP_IPC_OWNER" "~CAP_SYS_TIME" "~CAP_KILL" "~CAP_SYS_BOOT" "~CAP_LINUX_IMMUTABLE" "~CAP_IPC_LOCK" "~CAP_SYS_CHROOT" "~CAP_BLOCK_SUSPEND" "~CAP_SYS_PACCT" "~CAP_WAKE_ALARM" "~CAP_AUDIT_WRITE" "~CAP_AUDIT_CONTROL" "~CAP_AUDIT_READ" "CAP_DAC_READ_SEARCH" "CAP_DAC_OVERRIDE" ];

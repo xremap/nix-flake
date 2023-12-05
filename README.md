@@ -151,6 +151,7 @@ Following `services.xremap` options are exposed:
 * `deviceName` – the name of the device to be used. To find out the name, you can check `/proc/bus/input/devices`
 * `watch` – whether to watch for new devices
 * `mouse` – whether to watch for mice by default
+* `debug` – enables debug logging for xremap
 
 See examples in `nixosConfigurations` inside flake.nix.
 
