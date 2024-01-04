@@ -20,140 +20,14 @@ Flake implements xremap features that allow specifying per-application remapping
 `**`: Hyprland feature can be enabled, but the service cannot find a socket
 
 # How to use
-## On NixOS
 
-1. Add following to your `flake.nix`:
+TL;DR:
 
-    ```nix
-    {
-        inputs.xremap-flake.url = "github:xremap/nix-flake";
-    }
-    ```
+1. Import one of this flake's modules (`xremap-flake.nixosModules.default` or `xremap-flake.homeManagerModules.default`)
+2. (optional) configure xmreap for your DE (`services.xremap.withWlroots`/`withX11`/etc., see [HOWTO](./docs/HOWTO.md))
+3. Configure xremap binds in `services.xremap.config`
 
-2. Import the `xremap-flake.nixosModules.default` module.
-3. Configure the [module options](#Configuration)
-
-<details>
-  <summary>Sample config</summary>
-  
-  Assuming flake-managed machine with hostname `nixos`:
-  
-  ```nix
-  # flake.nix
-  {
-    inputs.xremap-flake.url = "github:xremap/nix-flake";
-    outputs = inputs@{ ... }: {
-      nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          inputs.xremap-flake.nixosModules.default
-          {
-            services.xremap = {
-              userName = "alice";  # run as a systemd service in alice
-              serviceMode = "user";  # run xremap as user
-              config = {
-                modmap = [
-                  {
-                      name = "Global";
-                      remap = { "CapsLock" = "Esc"; };  # globally remap CapsLock to Esc
-                  }
-                ];
-              };
-            };
-          }
-        ];
-        # < the rest of configuration >
-      };
-    };
-  }
-  ```
-</details>
-
-## Using home-manager on non-NixOS system
-1. Add following to your `flake.nix`:
-
-    ```nix
-    {
-        inputs.xremap-flake.url = "github:xremap/nix-flake";
-    }
-    ```
-
-2. Import the `xremap-flake.homeManagerModules.default` module.
-3. Set the [module options](#Configuration) without the user-related settings. This will create a systemd user service with xremap.
-4. [Configure xremap to run without sudo](https://github.com/k0kubun/xremap#usage) by adding your user to `input` group and (optionally) adding the udev rule.
-
-<details>
-  <summary>Sample config</summary>
-
-  Assuming flake-managed machine with hostname `nixos` and user `me`:
-
-  ```nix
-  # flake.nix
-  {
-    inputs.xremap-flake.url = "github:xremap/nix-flake";
-    outputs = inputs@{ ... }: {
-      nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.users."me" = {
-              imports = [
-                ./home.nix
-                inputs.xremap-flake.homeManagerModules.default
-                {
-                  services.xremap = {
-                    config = {
-                      modmap = [
-                        {
-                          name = "Global";
-                          remap = {"CapsLock" = "Esc";}; # globally remap CapsLock to Esc
-                        }
-                      ];
-                    # other xremap settings go here
-                    };
-                  };
-                }
-              ];
-            };
-          }
-        ];
-        # < the rest of configuration >
-      };
-    };
-  }
-  ```
-</details>
-
-## Any other configuration
-
-Alternatively, one of the flake packages (see `nix flake show github:xremap/nix-flake`) can be used with `nix run` to launch xremap with the corresponding feature.
-
-# Configuration
-
-Following `services.xremap` options are exposed:
-
-* `serviceMode` – whether to run as user or system
-* `withWlroots` – whether to enable wlroots-based compositor support (Sway, Hyprland, etc.)
-* `withSway` – whether to enable Sway support (consider using `withWlroots`, according to upstream)
-* `withGnome` – whether to enable Gnome support
-* `withHypr` – whether to enable Hyprland support (consider using `withWlroots`, according to upstream)
-* `withX11` – whether to enable X11 support
-* `withKDE` – whether to enable KDE wayland support
-* `package` – which package for xremap to use
-* `config` – configuration for xremap defined as Nix attribute set. See [original repo](https://github.com/k0kubun/xremap) for examples.
-
-    Alternatively raw config in YAML format can be specified in `.yamlConfig` option.
-
-* `userId` – user under which Sway IPC socket runs
-* `userName` – Name of user logging into graphical session
-* `deviceName` – the name of the device to be used. To find out the name, you can check `/proc/bus/input/devices`
-* `watch` – whether to watch for new devices
-* `mouse` – whether to watch for mice by default
-* `debug` – enables debug logging for xremap
-
-See examples in `nixosConfigurations` inside flake.nix.
+See [HOWTO](./docs/HOWTO.md) for more information and sample configs.
 
 # Developemnt
 
