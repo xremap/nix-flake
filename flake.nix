@@ -54,6 +54,7 @@
         perSystem = { config, self', inputs', pkgs, system, ... }:
           let
             craneLib = inputs.crane.lib.${system};
+            inherit (pkgs) lib;
           in
           {
             formatter = pkgs.nixpkgs-fmt;
@@ -122,11 +123,13 @@
                 inherit (pkgs.rustPackages) clippy;
               };
             };
+
+            checks = import ./checks { inherit self pkgs lib; };
           };
         flake = {
           nixosModules.default = importApply ./modules { localFlake = self; inherit withSystem; };
           homeManagerModules.default = importApply ./homeManagerModules { localFlake = self; inherit withSystem; };
-          nixosConfigurations = import ./nixosConfigurations { localFlake = self; inherit inputs; };
+          # nixosConfigurations = import ./nixosConfigurations { localFlake = self; inherit inputs; }; # TODO: restore
           localLib = import ./lib { localFlake = self; };
         };
       }

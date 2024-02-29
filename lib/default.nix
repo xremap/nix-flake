@@ -3,6 +3,8 @@
 let
   inherit (pkgs.stdenv.hostPlatform) system;
   selfPkgs' = localFlake.packages.${system};
+
+  settingsFormat = pkgs.formats.yaml { };
 in
 {
   commonOptions = with lib; {
@@ -41,7 +43,7 @@ in
       ;
     };
     config = mkOption {
-      type = types.attrs;
+      type = types.submodule { freeformType = settingsFormat.type; };
       description = "Xremap configuration. See xremap repo for examples. Cannot be used together with .yamlConfig";
       default = { };
       example = ''
@@ -110,12 +112,17 @@ in
     };
     debug = mkEnableOption "run xremap with RUST_LOG=debug in case upstream needs logs";
   };
-  configFile = pkgs.writeTextFile {
-    name = "xremap-config.yml";
-    text =
-      assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { })) || throw "Xremap's config needs to be specified either in .yamlConfig or in .config";
-      if cfg.yamlConfig == "" then pkgs.lib.generators.toYAML { } cfg.config else cfg.yamlConfig;
-  };
+
+  configFile =
+    assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { })) || throw "Xremap's config needs to be specified either in .yamlConfig or in .config";
+    if cfg.yamlConfig == "" then
+      settingsFormat.generate "config.yml" cfg.config
+    else
+      pkgs.writeTextFile {
+        name = "xremap-config.yml";
+        text = cfg.yamlConfig;
+      };
+
   mkExecStart = configFile:
     builtins.concatStringsSep " "
       (lib.flatten
