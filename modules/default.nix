@@ -9,8 +9,8 @@ let
 in
 with lib; {
   imports = [
-    (import ./user-service.nix { inherit mkExecStart configFile;})
-    (import ./system-service.nix { inherit mkExecStart configFile;})
+    (import ./user-service.nix { inherit mkExecStart configFile; })
+    (import ./system-service.nix { inherit mkExecStart configFile; })
   ];
   options.services.xremap = {
     serviceMode = mkOption {

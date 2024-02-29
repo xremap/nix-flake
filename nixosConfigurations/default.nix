@@ -129,10 +129,11 @@ in
     hostName = "testAssertFail";
     customModules = [{ services.xremap.config = pkgs.lib.mkForce { }; }];
   };
-  testMultipleWithFail = mkDevSystem {
-    hostName = "testMultipleWithFail";
-    customModules = [{ services.xremap = { withWlroots = true; withX11 = true;}; }];
-  } // { _comment = "This VM should not run successfully; shows an error message about multiple with*";};
+  testMultipleWithFail = mkDevSystem
+    {
+      hostName = "testMultipleWithFail";
+      customModules = [{ services.xremap = { withWlroots = true; withX11 = true; }; }];
+    } // { _comment = "This VM should not run successfully; shows an error message about multiple with*"; };
   kde-wayland-user = mkDevSystem {
     hostName = "kde-wayland-user";
     customModules = [
