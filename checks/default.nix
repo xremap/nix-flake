@@ -3,12 +3,17 @@ let
   checks = [
     ./xremap-no-features-root-test.nix
   ];
+  inherit (lib) pipe;
 in
-lib.pipe checks
+pipe checks
   [
     (map (checkFile:
       {
-        name = builtins.toString checkFile;
+        name = pipe checkFile [
+          builtins.toString
+          builtins.baseNameOf
+          (lib.replaceStrings [ ".nix" ] [ "" ])
+        ];
         value = pkgs.testers.runNixOSTest (import checkFile { inherit self; });
       }
     ))
