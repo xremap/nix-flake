@@ -24,7 +24,7 @@ Flake implements xremap features that allow specifying per-application remapping
 TL;DR:
 
 1. Import one of this flake's modules (`xremap-flake.nixosModules.default` or `xremap-flake.homeManagerModules.default`)
-2. (optional) configure xmreap for your DE (`services.xremap.withWlroots`/`withX11`/etc., see [HOWTO](./docs/HOWTO.md))
+2. (optional) configure xremap for your DE (`services.xremap.withWlroots`/`withX11`/etc., see [HOWTO](./docs/HOWTO.md))
 3. Configure xremap binds in `services.xremap.config`
 
 See [HOWTO](./docs/HOWTO.md) for more information and sample configs.
