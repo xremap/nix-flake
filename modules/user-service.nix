@@ -6,7 +6,7 @@ let
   cfg = config.services.xremap;
 in
 {
-  config = lib.mkIf (cfg.serviceMode == "user") {
+  config = lib.mkIf (cfg.enable && cfg.serviceMode == "user") {
     hardware.uinput.enable = true;
     /* services.udev.extraRules = */
     /*   '' */
