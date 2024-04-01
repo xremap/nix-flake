@@ -7,7 +7,7 @@ let
   inherit (lib) optionalString;
 in
 {
-  systemd.services.xremap = lib.mkIf (cfg.serviceMode == "system") {
+  systemd.services.xremap = lib.mkIf (cfg.enable && cfg.serviceMode == "system") {
     description = "xremap system service";
     path = [ cfg.package ];
     wantedBy = [ "multi-user.target" ];

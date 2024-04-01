@@ -13,6 +13,11 @@ with lib; {
     (import ./system-service.nix { inherit mkExecStart configFile; })
   ];
   options.services.xremap = {
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable xremap service";
+    };
     serviceMode = mkOption {
       type = types.enum [ "user" "system" ];
       default = "system";
