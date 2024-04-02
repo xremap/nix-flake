@@ -193,9 +193,10 @@ TODO
 
 # Xremap service configuration
 
-There are two categories of options:
+There are three categories of options:
 
-1. Options that enable package features (support for X/Wayland) or service configuration.
+1. `enabled` option; true by default for mostly historic reasons.
+2. Options that enable package features (support for X/Wayland) or service configuration.
 
     Feature flags are:
 
@@ -217,9 +218,10 @@ There are two categories of options:
     * `package` – which package for xremap to use. Useful if you want to somehow override the flake-provided package.
     * `debug` – enables debug logging for xremap (off by default)
 
-2. Options that define xremap's config. See [upstream](https://github.com/k0kubun/xremap) for more options.
+3. Options that define xremap's config. See [upstream](https://github.com/k0kubun/xremap) for more options.
 
     They are defined in either `services.xremap.config` as a Nix attrset or in `services.xremap.yamlConfig` as raw YAML text.
+
 
 # Troubleshooting
 
