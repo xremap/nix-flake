@@ -6,7 +6,8 @@ let
   cfg = config.services.xremap;
   localLib = localFlake.localLib { inherit pkgs lib cfg; };
   inherit (localLib) mkExecStart configFile;
-in with lib; {
+in
+with lib; {
   imports = [
     (import ./user-service.nix { inherit mkExecStart configFile; })
     (import ./system-service.nix { inherit mkExecStart configFile; })
