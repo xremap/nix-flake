@@ -14,6 +14,11 @@ in
     withHypr = mkEnableOption "support for Hyprland (consider switching to wlroots)";
     withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, Hyprland, etc.)";
     withKDE = mkEnableOption "support KDE-Plasma Wayland";
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable xremap service";
+    };
     package = mkOption {
       type = types.package;
       default =

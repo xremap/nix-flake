@@ -6,18 +6,12 @@ let
   cfg = config.services.xremap;
   localLib = localFlake.localLib { inherit pkgs lib cfg; };
   inherit (localLib) mkExecStart configFile;
-in
-with lib; {
+in with lib; {
   imports = [
     (import ./user-service.nix { inherit mkExecStart configFile; })
     (import ./system-service.nix { inherit mkExecStart configFile; })
   ];
   options.services.xremap = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable xremap service";
-    };
     serviceMode = mkOption {
       type = types.enum [ "user" "system" ];
       default = "system";
