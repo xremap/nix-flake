@@ -2,11 +2,11 @@
 { pkgs, lib, config, ... }:
 
 let
-  inherit (lib) optionalString;
+  inherit (lib) mkIf optionalString;
   cfg = config.services.xremap;
 in
 {
-  config = lib.mkIf (cfg.enable && cfg.serviceMode == "user") {
+  config = mkIf (cfg.enable && cfg.serviceMode == "user") {
     hardware.uinput.enable = true;
     /* services.udev.extraRules = */
     /*   '' */

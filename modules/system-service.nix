@@ -4,10 +4,10 @@
 let
   cfg = config.services.xremap;
   userPath = "/run/user/${toString cfg.userId}";
-  inherit (lib) optionalString;
+  inherit (lib) mkIf optionalString;
 in
 {
-  systemd.services.xremap = lib.mkIf (cfg.enable && cfg.serviceMode == "system") {
+  systemd.services.xremap = mkIf (cfg.enable && cfg.serviceMode == "system") {
     description = "xremap system service";
     path = [ cfg.package ];
     wantedBy = [ "multi-user.target" ];

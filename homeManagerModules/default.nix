@@ -4,11 +4,11 @@ let
   cfg = config.services.xremap;
   localLib = localFlake.localLib { inherit pkgs lib cfg; };
   inherit (localLib) mkExecStart configFile;
-  inherit (lib) optionalString;
+  inherit (lib) mkIf optionalString;
 in
 {
   options.services.xremap = localLib.commonOptions;
-  config = {
+  config = mkIf cfg.enable {
     systemd.user.services.xremap = {
       Unit = {
         Description = "xremap service";
