@@ -247,6 +247,18 @@ Two approaches to solve this:
 1. Use binds to something like `${lib.getExe pkgs.pavucontrol}`
 2. (not applicable to all DEs) use the bind to call DE-specific utility, e.g. `hyprctl exec <binary>`. This way whatever UI customizations are present on the DE level will get propagated to launched binary.
 
+## (specific to X11) xremap starts but app-specific shortcuts are not working
+
+If you are using X11 and have enabled `withX11`, but the application-specific keybinds do not work, check the logs (`journalctl -u xremap`).
+
+Should the logs contain:
+
+```
+Failed to connect to X11: X11 setup failed: 'Authorization required, but no authorization protocol specified
+```
+
+You would need to run `xhost +SI:localuser:root`. One approach to do this is described in the example config "Systemwide example with X feature for application-specific remaps".
+
 ## Xremap service is not started automatically
 
 Happens if `serviceMode == "user"` or when using home-manager module; typically because `graphical-session.target` is not launched automatically.
