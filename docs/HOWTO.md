@@ -21,7 +21,10 @@ There are two main ways of running xremap -- as a system service or as a user se
 For all examples in this section you can copy the code into a random `flake.nix` on your machine and run it in a VM as `nix run <path_to_flake>#nixosConfigurations.nixos.config.system.build.vm`.
 
 <details>
- <summary>System module, no desktop environment</summary>
+ <summary>
+  
+  ## System module, no desktop environment
+  </summary>
 
   A very simple configuration that globally maps CapsLock to Escape and Ctrl+U to Page Up can look like this:
   
@@ -65,7 +68,10 @@ For all examples in this section you can copy the code into a random `flake.nix`
 
 
 <details>
-  <summary>User module</summary>
+  <summary>
+   
+   ## User module
+   </summary>
 
   ```nix
   # flake.nix
@@ -115,7 +121,10 @@ For all examples in this section you can copy the code into a random `flake.nix`
 </details>
 
 <details>
-  <summary>Systemwide example with X feature for application-specific remaps</summary>
+  <summary>
+   
+  ## Systemwide example with X feature for application-specific remaps 
+  </summary>
 
   ```nix
   # flake.nix
@@ -259,7 +268,7 @@ Should the logs contain:
 Failed to connect to X11: X11 setup failed: 'Authorization required, but no authorization protocol specified
 ```
 
-You would need to run `xhost +SI:localuser:root`. One approach to do this is described in the example config "Systemwide example with X feature for application-specific remaps".
+You would need to run `xhost +SI:localuser:root`. One approach to do this is described in [this example config](#systemwide-example-with-x-feature-for-application-specific-remaps).
 
 ## Xremap service is not started automatically
 
