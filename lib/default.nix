@@ -5,6 +5,9 @@ let
   selfPkgs' = localFlake.packages.${system};
 
   settingsFormat = pkgs.formats.yaml { };
+
+  inherit (lib.types) nullOr listOf nonEmptyStr;
+  inherit (lib) pipe singleton showWarnings;
 in
 {
   commonOptions = with lib; {
@@ -107,6 +110,11 @@ in
       default = "";
       description = "Device name which xremap will remap. If not specified - xremap will remap all devices.";
     };
+    deviceNames = mkOption {
+      type = nullOr (listOf nonEmptyStr);
+      default = null;
+      description = "List of devices to remap.";
+    };
     watch = mkEnableOption "running xremap watching new devices";
     mouse = mkEnableOption "watching mice by default";
     extraArgs = mkOption {
@@ -128,21 +136,42 @@ in
         text = cfg.yamlConfig;
       };
 
-  mkExecStart = configFile:
-    builtins.concatStringsSep " "
-      (lib.flatten
-        (
-          lib.lists.singleton "${lib.getExe cfg.package}"
-          ++
-          lib.optional (cfg.deviceName != "") "--device \"${cfg.deviceName}\""
-          ++
-          lib.optional cfg.watch "--watch"
-          ++
-          lib.optional cfg.mouse "--mouse"
-          ++
-          cfg.extraArgs
-          ++
-          lib.lists.singleton configFile
+  mkExecStart =
+    configFile:
+    let
+      mkDeviceString = (x: "--device '${x}'");
+    in
+    builtins.concatStringsSep " " (
+      lib.flatten (
+        lib.lists.singleton "${lib.getExe cfg.package}"
+        ++ (
+          /*
+            Logic to handle --device parameter.
+
+            Originally only "deviceName" (singular) was an option. Upstream implemented multiple devices, e.g.:
+            https://github.com/xremap/xremap/issues/44
+
+            Option "deviceNames" (plural) is implemented to allow passing a list of devices to remap.
+
+            Legacy parameter wins by default to prevent surprises, but emits a warning.
+          */
+          if cfg.deviceName != "" then
+            pipe cfg.deviceName [
+              mkDeviceString
+              singleton
+              (showWarnings [
+                "'deviceName' option is deprecated in favor of 'deviceNames'. Current value will continue working but please replace it with 'deviceNames'."
+              ])
+            ]
+          else if cfg.deviceNames != null then
+            map mkDeviceString cfg.deviceNames
+          else
+            [ ]
         )
-      );
+        ++ lib.optional cfg.watch "--watch"
+        ++ lib.optional cfg.mouse "--mouse"
+        ++ cfg.extraArgs
+        ++ lib.lists.singleton (configFile)
+      )
+    );
 }
