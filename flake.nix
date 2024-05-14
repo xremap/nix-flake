@@ -5,7 +5,11 @@
     # Nixpkgs will be pinned to unstable to get the latest Rust
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+
+    # Development deps
     devshell.url = "github:numtide/devshell";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+
     # Utils for building Rust stuff
 
     crane = {
@@ -43,6 +47,7 @@
         imports = [
           inputs.devshell.flakeModule
           inputs.flake-parts.flakeModules.easyOverlay
+          inputs.treefmt-nix.flakeModule
         ];
         systems = [
           "x86_64-linux"
@@ -62,13 +67,14 @@
             inherit (pkgs) lib;
           in
           {
-            formatter = pkgs.nixfmt-rfc-style;
             packages = import ./overlay {
               inherit (inputs) xremap;
               inherit craneLib pkgs;
             };
             # This way all packages get immediately added to the overlay except for the one called literally called "default"
             overlayAttrs = builtins.removeAttrs config.packages [ "default" ];
+
+            # Development setup
             devshells.default = {
               env = [
                 {
@@ -126,6 +132,14 @@
               packages = builtins.attrValues {
                 inherit (pkgs) cargo rustc rustfmt;
                 inherit (pkgs.rustPackages) clippy;
+              };
+            };
+            treefmt = {
+              projectRootFile = "flake.nix";
+              programs = {
+                nixfmt-rfc-style.enable = true;
+                statix.enable = true;
+                deadnix.enable = true;
               };
             };
 
