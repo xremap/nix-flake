@@ -1,10 +1,5 @@
 { mkExecStart, configFile }:
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ lib, config, ... }:
 
 let
   inherit (lib) mkIf optionalString;
@@ -26,7 +21,7 @@ in
       path = [ cfg.package ];
       # NOTE: xremap needs DISPLAY:, WAYLAND_DISPLAY: and a bunch of other stuff in the environment to launch graphical applications (launch:)
       # On Gnome after gnome-session.target is up - those variables are populated
-      after = lib.mkIf (cfg.withGnome == true) [ "gnome-session.target" ];
+      after = lib.mkIf cfg.withGnome [ "gnome-session.target" ];
       wantedBy = [ "graphical-session.target" ];
       serviceConfig = {
         KeyringMode = "private";

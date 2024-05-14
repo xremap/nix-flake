@@ -42,7 +42,7 @@ in
         # Check that 0 or 1 features are enabled, since upstream throws an error otherwise
         assert
           (
-            lib.lists.count (x: x == true) (
+            lib.lists.count (x: x) (
               builtins.attrValues {
                 inherit (cfg)
                   withSway
@@ -163,7 +163,7 @@ in
   mkExecStart =
     configFile:
     let
-      mkDeviceString = (x: "--device '${x}'");
+      mkDeviceString = x: "--device '${x}'";
     in
     builtins.concatStringsSep " " (
       lib.flatten (
@@ -195,7 +195,7 @@ in
         ++ lib.optional cfg.watch "--watch"
         ++ lib.optional cfg.mouse "--mouse"
         ++ cfg.extraArgs
-        ++ lib.lists.singleton (configFile)
+        ++ lib.lists.singleton configFile
       )
     );
 }

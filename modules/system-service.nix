@@ -1,10 +1,5 @@
 { mkExecStart, configFile }:
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ lib, config, ... }:
 
 let
   cfg = config.services.xremap;
@@ -76,11 +71,11 @@ in
       # Need 'tmpfs' here so that the socket may be actually bind-mounted through Bind*Paths
       ProtectHome = "tmpfs";
       # This is needed, otherwise xremap cannot read from sway socket
-      BindReadOnlyPaths = lib.mkIf (cfg.withSway) [ userPath ];
+      BindReadOnlyPaths = lib.mkIf cfg.withSway [ userPath ];
       # Sway socket gets generated as $XDG_RUNTIME_DIR/sway-ipc.$UID.$SWAY_PID
       # Hacky way to allow sway socket
       # Systemd does not support wildcards :(
-      InaccessiblePaths = lib.mkIf (cfg.withSway) (
+      InaccessiblePaths = lib.mkIf cfg.withSway (
         map (x: "-${userPath}/${x}") [
           "app"
           "bus"

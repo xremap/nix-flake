@@ -1,9 +1,5 @@
 # Overlay file that contains the definition of building a package
-{
-  xremap,
-  craneLib,
-  pkgs,
-}:
+{ xremap, craneLib, ... }:
 let
   commonArgs = {
     src = xremap;

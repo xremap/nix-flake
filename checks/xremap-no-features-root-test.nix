@@ -2,7 +2,7 @@
 {
   name = "xremap-no-features-root-test";
   nodes.machine1 =
-    { config, pkgs, ... }:
+    { config, ... }:
     {
       services.getty.autologinUser = "root";
       imports = [

@@ -1,11 +1,6 @@
 # NOTE: modulesPath and imports are taken from nixpkgs#59219
 # Most of this file is very specific to running a dev VM for this project
-{
-  modulesPath,
-  pkgs,
-  lib,
-  ...
-}:
+{ modulesPath, pkgs, ... }:
 {
   imports = [ (modulesPath + "/virtualisation/qemu-vm.nix") ];
   users.users.root.password = "root";
