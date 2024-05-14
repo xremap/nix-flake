@@ -223,6 +223,7 @@ There are three categories of options:
     * `userId`, `int` – user under which IPC socket runs (1000 by default)
     * `watch`, `bool` – whether to watch for new devices (false by default)
     * `mouse`, `bool` – whether to watch for mice (false by default)
+    * `deviceNames`, `list of str`, – list of devices to monitor (empty by default)
     * `extraArgs`, `list of str`, – list of arguments to provide for xremap (empty by default)
     * `package` – which package for xremap to use. Useful if you want to somehow override the flake-provided package.
     * `debug` – enables debug logging for xremap (off by default)
