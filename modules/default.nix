@@ -38,11 +38,6 @@ with lib; {
       type = types.str;
       description = "Name of user logging into graphical session";
     };
-    deviceName = mkOption {
-      type = types.str;
-      default = "";
-      description = "Device name which xremap will remap. If not specified - xremap will remap all devices.";
-    };
     watch = mkEnableOption "running xremap watching new devices";
   } // localLib.commonOptions;
 }
