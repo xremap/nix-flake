@@ -1,20 +1,29 @@
 # localFlake and withSystem allow passing flake to the module through importApply
 # See https://flake.parts/define-module-in-separate-file.html
 { localFlake, withSystem }:
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   cfg = config.services.xremap;
   localLib = localFlake.localLib { inherit pkgs lib cfg; };
   inherit (localLib) mkExecStart configFile;
 in
-with lib; {
+with lib;
+{
   imports = [
     (import ./user-service.nix { inherit mkExecStart configFile; })
     (import ./system-service.nix { inherit mkExecStart configFile; })
   ];
   options.services.xremap = {
     serviceMode = mkOption {
-      type = types.enum [ "user" "system" ];
+      type = types.enum [
+        "user"
+        "system"
+      ];
       default = "system";
       description = ''
         The mode the service will run as.

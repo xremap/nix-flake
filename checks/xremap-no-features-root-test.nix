@@ -7,10 +7,27 @@
       services.getty.autologinUser = "root";
       imports = [
         self.nixosModules.default
-        { services.xremap.config.keymap = [{ name = "First remap"; remap = { "9" = "0"; }; }]; }
-        { services.xremap.config.keymap = [{ name = "Other remap"; remap = { "z" = "q"; }; }]; }
+        {
+          services.xremap.config.keymap = [
+            {
+              name = "First remap";
+              remap = {
+                "9" = "0";
+              };
+            }
+          ];
+        }
+        {
+          services.xremap.config.keymap = [
+            {
+              name = "Other remap";
+              remap = {
+                "z" = "q";
+              };
+            }
+          ];
+        }
       ];
-
     };
 
   # This test makes sure that both remaps are applied

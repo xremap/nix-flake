@@ -1,5 +1,9 @@
 # Overlay file that contains the definition of building a package
-{ xremap, craneLib, pkgs }:
+{
+  xremap,
+  craneLib,
+  pkgs,
+}:
 let
   commonArgs = {
     src = xremap;
@@ -14,17 +18,22 @@ let
   };
   cargoArtifacts = craneLib.buildDepsOnly commonArgs;
 
-  packageWithFeature = feature: craneLib.buildPackage (commonArgs // {
-    inherit cargoArtifacts;
-    cargoExtraArgs = "--locked${if (feature != null) then " --features ${feature}"  else ""}";
-    # cargoBuildOptions = (x: x ++ pkgs.lib.optional (feature != null) "--features ${feature}");
-    # The following two options are for introspection to be able to see if sway/gnome were actually pulled in
-    # To see that - visually inspect the deps directory inside result/target/ and check for swayipc/zbus
-    # See cargo.toml for feature-specific deps
-    # copyTarget = true;
-    # compressTarget = false;
-    meta.mainProgram = "xremap";
-  });
+  packageWithFeature =
+    feature:
+    craneLib.buildPackage (
+      commonArgs
+      // {
+        inherit cargoArtifacts;
+        cargoExtraArgs = "--locked${if (feature != null) then " --features ${feature}" else ""}";
+        # cargoBuildOptions = (x: x ++ pkgs.lib.optional (feature != null) "--features ${feature}");
+        # The following two options are for introspection to be able to see if sway/gnome were actually pulled in
+        # To see that - visually inspect the deps directory inside result/target/ and check for swayipc/zbus
+        # See cargo.toml for feature-specific deps
+        # copyTarget = true;
+        # compressTarget = false;
+        meta.mainProgram = "xremap";
+      }
+    );
 in
 rec {
   # No features

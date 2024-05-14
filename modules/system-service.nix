@@ -1,5 +1,10 @@
 { mkExecStart, configFile }:
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   cfg = config.services.xremap;
@@ -15,13 +20,49 @@ in
       Environment = optionalString cfg.debug "RUST_LOG=debug";
       PrivateNetwork = true;
       MemoryDenyWriteExecute = true;
-      CapabilityBoundingSet = [ "~CAP_SETUID" "~CAP_SETGID" "~CAP_SETPCAP" "~CAP_SYS_ADMIN" "~CAP_SYS_PTRACE" "~CAP_NET_ADMIN" "~CAP_FOWNER" "~CAP_IPC_OWNER" "~CAP_SYS_TIME" "~CAP_KILL" "~CAP_SYS_BOOT" "~CAP_LINUX_IMMUTABLE" "~CAP_IPC_LOCK" "~CAP_SYS_CHROOT" "~CAP_BLOCK_SUSPEND" "~CAP_SYS_PACCT" "~CAP_WAKE_ALARM" "~CAP_AUDIT_WRITE" "~CAP_AUDIT_CONTROL" "~CAP_AUDIT_READ" "CAP_DAC_READ_SEARCH" "CAP_DAC_OVERRIDE" ];
+      CapabilityBoundingSet = [
+        "~CAP_SETUID"
+        "~CAP_SETGID"
+        "~CAP_SETPCAP"
+        "~CAP_SYS_ADMIN"
+        "~CAP_SYS_PTRACE"
+        "~CAP_NET_ADMIN"
+        "~CAP_FOWNER"
+        "~CAP_IPC_OWNER"
+        "~CAP_SYS_TIME"
+        "~CAP_KILL"
+        "~CAP_SYS_BOOT"
+        "~CAP_LINUX_IMMUTABLE"
+        "~CAP_IPC_LOCK"
+        "~CAP_SYS_CHROOT"
+        "~CAP_BLOCK_SUSPEND"
+        "~CAP_SYS_PACCT"
+        "~CAP_WAKE_ALARM"
+        "~CAP_AUDIT_WRITE"
+        "~CAP_AUDIT_CONTROL"
+        "~CAP_AUDIT_READ"
+        "CAP_DAC_READ_SEARCH"
+        "CAP_DAC_OVERRIDE"
+      ];
       SystemCallArchitectures = [ "native" ];
       RestrictRealtime = true;
-      SystemCallFilter = map (x: "~@${x}") [ "clock" "debug" "module" "reboot" "swap" "cpu-emulation" "obsolete" "privileged" "resources" ];
+      SystemCallFilter = map (x: "~@${x}") [
+        "clock"
+        "debug"
+        "module"
+        "reboot"
+        "swap"
+        "cpu-emulation"
+        "obsolete"
+        "privileged"
+        "resources"
+      ];
       LockPersonality = true;
       UMask = "077";
-      IPAddressDeny = [ "0.0.0.0/0" "::/0" ];
+      IPAddressDeny = [
+        "0.0.0.0/0"
+        "::/0"
+      ];
       # ProtectClock adds to DeviceAllow, which does not seem to work with xremap since it tries to enumerate all /dev/input devices
       # ProtectClock = true;
       # DeviceAllow = [ "/dev/input/event24" ];
@@ -39,7 +80,26 @@ in
       # Sway socket gets generated as $XDG_RUNTIME_DIR/sway-ipc.$UID.$SWAY_PID
       # Hacky way to allow sway socket
       # Systemd does not support wildcards :(
-      InaccessiblePaths = lib.mkIf (cfg.withSway) (map (x: "-${userPath}/${x}") [ "app" "bus" "dbus-1" ".dbus-proxy" "dconf" "env-vars" ".flatpak" ".flatpak-helper" "gnupg" "pipewire-0" "pipewire-0.lock" "pulse" "systemd" "tmux-${toString cfg.userId}" "wayland-1" "wayland-1.lock" ]);
+      InaccessiblePaths = lib.mkIf (cfg.withSway) (
+        map (x: "-${userPath}/${x}") [
+          "app"
+          "bus"
+          "dbus-1"
+          ".dbus-proxy"
+          "dconf"
+          "env-vars"
+          ".flatpak"
+          ".flatpak-helper"
+          "gnupg"
+          "pipewire-0"
+          "pipewire-0.lock"
+          "pulse"
+          "systemd"
+          "tmux-${toString cfg.userId}"
+          "wayland-1"
+          "wayland-1.lock"
+        ]
+      );
       # Looks like Hyprland socket is hardcoded to be in tmp
       PrivateTmp = cfg.withHypr;
       ProtectKernelLogs = true;

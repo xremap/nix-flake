@@ -1,5 +1,9 @@
 { localFlake }:
-{ pkgs, lib, cfg }:
+{
+  pkgs,
+  lib,
+  cfg,
+}:
 let
   inherit (pkgs.stdenv.hostPlatform) system;
   selfPkgs' = localFlake.packages.${system};
@@ -25,13 +29,32 @@ in
     package = mkOption {
       type = types.package;
       default =
-        assert (cfg.withKDE -> (
-          # TODO: if some other place would need checking that it's a home manager module. If so -- add a "_hm" parameter to the module.
-          !(builtins.hasAttr "serviceMode" cfg) || (cfg.serviceMode == "user")  # First check that "serviceMode" is present in the config. If not -- it's home manager module.
-        )) || throw "Upstream does not support running withKDE as root";
+        assert
+          (
+            cfg.withKDE
+            -> (
+              # TODO: if some other place would need checking that it's a home manager module. If so -- add a "_hm" parameter to the module.
+              !(builtins.hasAttr "serviceMode" cfg) || (cfg.serviceMode == "user") # First check that "serviceMode" is present in the config. If not -- it's home manager module.
+            )
+          )
+          || throw "Upstream does not support running withKDE as root";
 
         # Check that 0 or 1 features are enabled, since upstream throws an error otherwise
-        assert (lib.lists.count (x: x == true) (builtins.attrValues { inherit (cfg) withSway withGnome withX11 withHypr withWlroots withKDE; }) <= 1)
+        assert
+          (
+            lib.lists.count (x: x == true) (
+              builtins.attrValues {
+                inherit (cfg)
+                  withSway
+                  withGnome
+                  withX11
+                  withHypr
+                  withWlroots
+                  withKDE
+                  ;
+              }
+            ) <= 1
+          )
           || throw "Xremap cannot be built with more than one feature. Check that no more than 1 with* feature is enabled";
 
         if cfg.withWlroots then
@@ -47,8 +70,7 @@ in
         else if cfg.withKDE then
           selfPkgs'.xremap-kde
         else
-          selfPkgs'.xremap
-      ;
+          selfPkgs'.xremap;
     };
     config = mkOption {
       type = types.submodule { freeformType = settingsFormat.type; };
@@ -127,7 +149,9 @@ in
   };
 
   configFile =
-    assert ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { })) || throw "Xremap's config needs to be specified either in .yamlConfig or in .config";
+    assert
+      ((cfg.yamlConfig == "" && cfg.config != { }) || (cfg.yamlConfig != "" && cfg.config == { }))
+      || throw "Xremap's config needs to be specified either in .yamlConfig or in .config";
     if cfg.yamlConfig == "" then
       settingsFormat.generate "config.yml" cfg.config
     else

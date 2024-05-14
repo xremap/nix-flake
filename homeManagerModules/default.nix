@@ -1,5 +1,10 @@
 { localFlake, withSystem }:
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = config.services.xremap;
   localLib = localFlake.localLib { inherit pkgs lib cfg; };

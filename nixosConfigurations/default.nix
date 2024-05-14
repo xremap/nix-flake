@@ -30,39 +30,47 @@ let
       };
     }
   ];
-  mkDevSystem = { hostName, customModules }: pkgs.lib.nixosSystem {
-    inherit system;
-    modules = commonModules ++ customModules ++ [{
-      networking = { inherit hostName; };
-    }];
-  };
+  mkDevSystem =
+    { hostName, customModules }:
+    pkgs.lib.nixosSystem {
+      inherit system;
+      modules =
+        commonModules
+        ++ customModules
+        ++ [
+          {
+            networking = {
+              inherit hostName;
+            };
+          }
+        ];
+    };
 in
 {
   # no-features-system = abort "Tested ad-hoc";
   # no-features-user = abort "Tested ad-hoc";
-  sway-system = mkDevSystem
-    {
+  sway-system =
+    mkDevSystem {
       hostName = "sway-system";
       customModules = [
         # Autologin
         { services.getty.autologinUser = "alice"; }
         # Sway
-        {
-          programs.sway.enable = true;
-        }
+        { programs.sway.enable = true; }
         ./sway-common.nix
       ];
-    } // { _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input."; };
-  sway-wlroots-system = mkDevSystem
-    {
+    }
+    // {
+      _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input.";
+    };
+  sway-wlroots-system =
+    mkDevSystem {
       hostName = "sway-wlroots-system";
       customModules = [
         # Autologin
         { services.getty.autologinUser = "alice"; }
         # Sway
-        {
-          programs.sway.enable = true;
-        }
+        { programs.sway.enable = true; }
         ./sway-common.nix
         {
           services.xremap = {
@@ -71,18 +79,22 @@ in
           };
         }
       ];
-    } // { _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input."; };
+    }
+    // {
+      _comment = "After auto-login, run 'sway' and 'sleep 1 && systemctl restart xremap'. Sleep is needed to prevent xremap from capturing extra input.";
+    };
   # sway-user = abort "Tested ad-hoc";
   # gnome-system = abort "Tested ad-hoc";
-  gnome-user = mkDevSystem
-    {
+  gnome-user =
+    mkDevSystem {
       hostName = "gnome-user";
-      customModules = [
-        ./gnome-common.nix
-      ];
-    } // { _comment = "Enable the xremap Gnome extension manually."; };
-  x11-system = mkDevSystem
-    {
+      customModules = [ ./gnome-common.nix ];
+    }
+    // {
+      _comment = "Enable the xremap Gnome extension manually.";
+    };
+  x11-system =
+    mkDevSystem {
       hostName = "x11-system";
       customModules = [
         # Autologin
@@ -96,48 +108,98 @@ in
           };
         }
       ];
-    } // { _comment = "Run startx after autologin."; };
+    }
+    // {
+      _comment = "Run startx after autologin.";
+    };
   # x11-user = abort "Tested ad-hoc";
   # hypr-system = abort "Not implemented";
-  hypr-user = mkDevSystem
-    {
+  hypr-user =
+    mkDevSystem {
       hostName = "hypr-user";
       customModules = [
         # Autologin
         { services.getty.autologinUser = "alice"; }
         inputs.hyprland.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
-        { home-manager = { users.alice = { ... }: { imports = [ inputs.hyprland.homeManagerModules.default ]; }; }; }
-        { services.xremap = { withHypr = true; serviceMode = "user"; }; }
+        {
+          home-manager = {
+            users.alice =
+              { ... }:
+              {
+                imports = [ inputs.hyprland.homeManagerModules.default ];
+              };
+          };
+        }
+        {
+          services.xremap = {
+            withHypr = true;
+            serviceMode = "user";
+          };
+        }
         ./hypr-common.nix
       ];
-    } // { _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test."; };
-  hypr-wlroots-user = mkDevSystem
-    {
+    }
+    // {
+      _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test.";
+    };
+  hypr-wlroots-user =
+    mkDevSystem {
       hostName = "hypr-wlroots-user";
       customModules = [
         # Autologin
         { services.getty.autologinUser = "alice"; }
         inputs.hyprland.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
-        { home-manager = { users.alice = { ... }: { imports = [ inputs.hyprland.homeManagerModules.default ]; }; }; }
-        { services.xremap = { withWlroots = true; serviceMode = "user"; }; }
+        {
+          home-manager = {
+            users.alice =
+              { ... }:
+              {
+                imports = [ inputs.hyprland.homeManagerModules.default ];
+              };
+          };
+        }
+        {
+          services.xremap = {
+            withWlroots = true;
+            serviceMode = "user";
+          };
+        }
         ./hypr-common.nix
       ];
-    } // { _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test."; };
+    }
+    // {
+      _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test.";
+    };
   testAssertFail = mkDevSystem {
     hostName = "testAssertFail";
-    customModules = [{ services.xremap.config = pkgs.lib.mkForce { }; }];
+    customModules = [ { services.xremap.config = pkgs.lib.mkForce { }; } ];
   };
-  testMultipleWithFail = mkDevSystem
-    {
+  testMultipleWithFail =
+    mkDevSystem {
       hostName = "testMultipleWithFail";
-      customModules = [{ services.xremap = { withWlroots = true; withX11 = true; }; }];
-    } // { _comment = "This VM should not run successfully; shows an error message about multiple with*"; };
+      customModules = [
+        {
+          services.xremap = {
+            withWlroots = true;
+            withX11 = true;
+          };
+        }
+      ];
+    }
+    // {
+      _comment = "This VM should not run successfully; shows an error message about multiple with*";
+    };
   kde-wayland-user = mkDevSystem {
     hostName = "kde-wayland-user";
     customModules = [
-      { services.xremap = { withKDE = true; serviceMode = "user"; }; }
+      {
+        services.xremap = {
+          withKDE = true;
+          serviceMode = "user";
+        };
+      }
       ./kde-common.nix
     ];
   };

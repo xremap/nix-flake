@@ -20,10 +20,7 @@
     inherit (pkgs) kitty wev libnotify;
     inherit (pkgs.xorg) xev;
   };
-  services.udev.packages = builtins.attrValues {
-    inherit (pkgs.gnome) gnome-settings-daemon;
-  };
+  services.udev.packages = builtins.attrValues { inherit (pkgs.gnome) gnome-settings-daemon; };
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
-
 }
