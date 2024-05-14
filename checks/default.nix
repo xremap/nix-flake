@@ -2,6 +2,8 @@
 let
   checks = [
     ./xremap-no-features-root-test.nix
+    ./xremap-single-device.nix
+    ./xremap-multiple-devices.nix
   ];
   inherit (lib) pipe;
 in
