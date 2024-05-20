@@ -28,7 +28,7 @@
 
     # The Rust source for xremap
     xremap = {
-      url = "github:k0kubun/xremap?ref=v0.8.18";
+      url = "github:k0kubun/xremap?ref=v0.9.0";
       flake = false;
     };
     hyprland = {
