@@ -54,14 +54,9 @@
           "aarch64-linux"
         ];
         perSystem =
-          {
-            config,
-            pkgs,
-            system,
-            ...
-          }:
+          { config, pkgs, ... }:
           let
-            craneLib = inputs.crane.lib.${system};
+            craneLib = inputs.crane.mkLib pkgs;
             inherit (pkgs) lib;
           in
           {
