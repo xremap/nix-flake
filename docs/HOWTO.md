@@ -13,10 +13,10 @@ Note that flakes are required. If there is a demand for non-flake-based modules 
 
 There are two main ways of running xremap -- as a system service or as a user service. Not all combinations of mode x desktop environment are supported:
 
-| Scenario | No features | KDE | Sway | Gnome | X11 | Hyprland |
-| - | - | - | - | - | - | - |
-| System | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark:`*` | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x:`**` |
-| User   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:    | :heavy_check_mark:       | :question: | :heavy_check_mark:           |
+| Scenario | No features | KDE | Gnome | X11 | Wlroots |
+| - | - | - | - | - | - |
+| System | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: |
+| User   | :heavy_check_mark: | :heavy_check_mark: |  :heavy_check_mark:       | :question: | :heavy_check_mark:           |
 
 For all examples in this section you can copy the code into a random `flake.nix` on your machine and run it in a VM as `nix run <path_to_flake>#nixosConfigurations.nixos.config.system.build.vm`.
 
@@ -213,8 +213,6 @@ There are three categories of options:
     * `withGnome`, `bool` – whether to enable Gnome support
     * `withX11`, `bool` – whether to enable X11 support
     * `withKDE`, `bool` – whether to enable KDE wayland support
-    * `withSway`, `bool` – whether to enable Sway support (consider using `withWlroots`, according to upstream)
-    * `withHypr`, `bool` – whether to enable Hyprland support (consider using `withWlroots`, according to upstream)
 
     All of them are false by default, which means no application-specific remaps work as xremap does not know which application is being used.
 
