@@ -275,7 +275,7 @@ You would need to run `xhost +SI:localuser:root`. One approach to do this is des
 
 Happens if `serviceMode == "user"` or when using home-manager module; typically because `graphical-session.target` is not launched automatically.
 
-If you are using a desktop environment (Gnome, KDE, something wlroots-based, etc.) – make sure that the target is being
+If you are using a desktop environment (Gnome, KDE, something wlroots-based, etc.) – make sure that the target is started.
 
 If you intend to use xremap without a DE, change `systemd.user.services.xremap.wantedBy` to some target that starts after you log in or manually start `systemctl --user start xremap`
 
