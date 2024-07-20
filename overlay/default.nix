@@ -1,6 +1,12 @@
 # Overlay file that contains the definition of building a package
-{ xremap, craneLib, ... }:
+{
+  xremap,
+  craneLib,
+  pkgs,
+  ...
+}:
 let
+  inherit (pkgs) lib;
   commonArgs = {
     src = xremap;
     strictDeps = true;
@@ -30,15 +36,24 @@ let
         meta.mainProgram = "xremap";
       }
     );
+
+  mkUpstreamDeprecatedNote =
+    feature:
+    lib.warn
+      ''
+        Xremap: upstream has deprecated feature '${feature}' in favor of 'wlroots'.
+
+        The package will be built with 'wlroots' but in future release of the Nix flake this will turn into an error.''
+      (packageWithFeature "wlroots");
 in
 rec {
   # No features
   default = xremap;
   xremap = packageWithFeature null;
   xremap-wlroots = packageWithFeature "wlroots";
-  xremap-sway = packageWithFeature "sway";
+  xremap-sway = mkUpstreamDeprecatedNote "sway";
   xremap-gnome = packageWithFeature "gnome";
   xremap-x11 = packageWithFeature "x11";
-  xremap-hypr = packageWithFeature "hypr";
+  xremap-hypr = mkUpstreamDeprecatedNote "hypr";
   xremap-kde = packageWithFeature "kde";
 }
