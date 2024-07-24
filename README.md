@@ -25,7 +25,7 @@ TL;DR:
 
 See [HOWTO](./docs/HOWTO.md) for more information and sample configs.
 
-# Developemnt
+# Development
 
 The nix flake comes with a few VM presets that can be used to test some of the combinations. To run a specific VM:
 
