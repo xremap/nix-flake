@@ -38,6 +38,10 @@
       start_all()
       machine.wait_for_unit("xremap.service")
       machine.sleep(2)
+
+      # Wait for login -- this test runs against tty
+      machine.wait_until_tty_matches("1", "login: ")
+
       machine.send_chars(f"echo -n 'z' > {output_file}\n")
       machine.sleep(2)
 
