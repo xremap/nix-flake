@@ -9,7 +9,7 @@ let
   cfg = config.services.xremap;
   localLib = localFlake.localLib { inherit pkgs lib cfg; };
   inherit (localLib) mkExecStart configFile;
-  inherit (lib) mkIf optionalAttrs;
+  inherit (lib) mkIf mkMerge optionalAttrs;
 in
 {
   options.services.xremap = localLib.commonOptions;
@@ -20,11 +20,14 @@ in
         PartOf = [ "graphical-session.target" ];
         After = [ "graphical-session.target" ];
       };
-      Service = {
-        Type = "simple";
-        ExecStart = mkExecStart configFile;
-        Restart = "always";
-      } // optionalAttrs cfg.debug { Environment = [ "RUST_LOG=debug" ]; };
+      Service = mkMerge [
+        {
+          Type = "simple";
+          ExecStart = mkExecStart configFile;
+          Restart = "always";
+        }
+        (optionalAttrs cfg.debug { Environment = [ "RUST_LOG=debug" ]; })
+      ];
       Install.WantedBy = [ "graphical-session.target" ];
     };
   };
