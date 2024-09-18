@@ -10,6 +10,7 @@ let
     ./xremap-single-device.nix
     ./xremap-multiple-devices.nix
     ./xremap-debug.nix
+    ./xremap-home-manager.nix
   ];
   inherit (lib) pipe;
 in
