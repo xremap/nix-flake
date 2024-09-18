@@ -2,7 +2,7 @@
 { lib, config, ... }:
 
 let
-  inherit (lib) mkIf optionalString;
+  inherit (lib) mkIf mkMerge optionalAttrs;
   cfg = config.services.xremap;
 in
 {
@@ -23,29 +23,31 @@ in
       # On Gnome after gnome-session.target is up - those variables are populated
       after = lib.mkIf cfg.withGnome [ "gnome-session.target" ];
       wantedBy = [ "graphical-session.target" ];
-      serviceConfig = {
-        KeyringMode = "private";
-        SystemCallArchitectures = [ "native" ];
-        RestrictRealtime = true;
-        ProtectSystem = true;
-        SystemCallFilter = map (x: "~@${x}") [
-          "clock"
-          "debug"
-          "module"
-          "reboot"
-          "swap"
-          "cpu-emulation"
-          "obsolete"
-          # NOTE: These two make the spawned processes drop cores
-          # "privileged"
-          # "resources"
-        ];
-        LockPersonality = true;
-        UMask = "077";
-        RestrictAddressFamilies = "AF_UNIX";
-        Environment = optionalString cfg.debug "RUST_LOG=debug";
-        ExecStart = mkExecStart configFile;
-      };
+      serviceConfig = mkMerge [
+        {
+          KeyringMode = "private";
+          SystemCallArchitectures = [ "native" ];
+          RestrictRealtime = true;
+          ProtectSystem = true;
+          SystemCallFilter = map (x: "~@${x}") [
+            "clock"
+            "debug"
+            "module"
+            "reboot"
+            "swap"
+            "cpu-emulation"
+            "obsolete"
+            # NOTE: These two make the spawned processes drop cores
+            # "privileged"
+            # "resources"
+          ];
+          LockPersonality = true;
+          UMask = "077";
+          RestrictAddressFamilies = "AF_UNIX";
+          ExecStart = mkExecStart configFile;
+        }
+        (optionalAttrs cfg.debug { Environment = [ "RUST_LOG=debug" ]; })
+      ];
     };
   };
 }
