@@ -233,7 +233,82 @@ There are three categories of options:
 
 # Troubleshooting
 
-## Cannot launch applications
+## Environment variables
+
+### systemd service
+
+The xremap.service will only have access to environment variables defined
+through the `Environment=` and `EnvironmentFile=` entries in the service file.
+Moreover, other environment variables may be made available to the service by
+using `systemctl [--user] set-environment VARIABLE=VALUE`.
+
+To expose `home.sessionVariables` to the service, the following may be done:
+
+```nix
+{lib, pkgs, ...}:
+{
+  # This will make every variable to have a `Environment=VARIABLE=VALUE` entry.
+  systemd.user.services.xremap.Service = {
+    Environment = lib.mapAttrsToList (n: v: "${n}=\"${builtins.toString v}\"") config.home.sessionVariables;
+  };
+  # This will make a single `EnvironmentFile` entry, but implies the build of
+  # derivation.
+  systemd.user.services.xremap.Service = {
+    EnvironmentFile = builtins.toString (
+      pkgs.writeText "xremap-session-vars-as-env-d" (
+        builtins.concatStringsSep "\n" (
+          lib.mapAttrsToList (n: v: "${n}=\"${builtins.toString v}\"") config.home.sessionVariables
+        )
+      )
+    );
+  };
+}
+```
+
+#### Session variables being overwritten by `/etc/profile` family of files on a shell
+
+This happens because the session variables are set before the `/etc/profile`
+files are sourced, which happens only the shell is spawned.
+
+It can be fixed with the following if guard (following example uses Bash in a
+posix compliant manner, so it may be used on posix compliant shells, but needs
+adaptation for non compliant ones like fish):
+
+```nix
+{config, lib, ...}: {
+  programs.bash.initExtra = lib.mkOrder 99 ''
+    if [ -z "$__HM_SESS_VARS_SOURCED" ]; then
+      . ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh
+    fi
+  '';
+}
+```
+
+Now, the session variables will be sourced after the ones from `/etc/profile`.
+
+### Calling the binary directly as a non-root user
+
+For xremap to have access to the user environment the following may be done:
+
+1. If using home-manager for managing the xsession:
+	```nix
+	{pkgs, ...}:
+	{
+	  xsession.initExtra = ''
+	    ${lib.getExe pkgs.xremap} <path-to-config-file>
+	  '';
+	}
+	```
+	This exposes `home.sessionVariables` to xremap, since the `xsession` file
+	sources the `xprofile` file, which sources the file with the session
+	variables.
+1. If not using home-manager, DE/WM specific solutions may be used, that is, a
+   way to launch xremap together with. Here are some non exhaustive solutions:
+   1. dwm: add `<binary> <config-file> &` to the autostart.sh script, if using
+	  the [autostart patch](https://dwm.suckless.org/patches/autostart/).
+   1. Hyprland: hyprctl use `hyprctl exec <binary>`.
+
+### Cannot launch applications
 
 If there is a binding to launch an application that looks like this:
 
