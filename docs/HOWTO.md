@@ -213,6 +213,7 @@ There are three categories of options:
     * `withGnome`, `bool` – whether to enable Gnome support
     * `withX11`, `bool` – whether to enable X11 support
     * `withKDE`, `bool` – whether to enable KDE wayland support
+    * `withHypr`, `bool` – whether to enable non-wlroots based Hyprland support
 
     All of them are false by default, which means no application-specific remaps work as xremap does not know which application is being used.
 

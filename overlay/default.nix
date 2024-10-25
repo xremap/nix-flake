@@ -54,6 +54,6 @@ rec {
   xremap-sway = mkUpstreamDeprecatedNote "sway";
   xremap-gnome = packageWithFeature "gnome";
   xremap-x11 = packageWithFeature "x11";
-  xremap-hypr = mkUpstreamDeprecatedNote "hypr";
+  xremap-hypr = packageWithFeature "hypr";
   xremap-kde = packageWithFeature "kde";
 }

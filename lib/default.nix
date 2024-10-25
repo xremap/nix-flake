@@ -18,8 +18,8 @@ in
     withSway = mkEnableOption "support for Sway (consider switching to wlroots)";
     withGnome = mkEnableOption "support for Gnome";
     withX11 = mkEnableOption "support for X11";
-    withHypr = mkEnableOption "support for Hyprland (consider switching to wlroots)";
-    withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, Hyprland, etc.)";
+    withHypr = mkEnableOption "support for post-wlroots Hyprland";
+    withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, old Hyprland, etc.)";
     withKDE = mkEnableOption "support KDE-Plasma Wayland";
     enable = mkOption {
       type = types.bool;
@@ -66,7 +66,7 @@ in
         else if cfg.withX11 then
           selfPkgs'.xremap-x11
         else if cfg.withHypr then
-          lib.warn "Consider using withWlroots as recommended by upstream" selfPkgs'.xremap-hypr
+          selfPkgs'.xremap-hypr
         else if cfg.withKDE then
           selfPkgs'.xremap-kde
         else
