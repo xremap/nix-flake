@@ -196,9 +196,59 @@ Since on non-NixOS configurations, the environment outside the user cannot be co
 
 TODO
 
-# Example configurations
+<details>
+  <summary>
 
-TODO
+  ## Example configuration
+  </summary>
+
+  ```nix
+  {
+    description = "Home-manager flake for xremap";
+
+    inputs = {
+      nixpkgs.url = "nixpkgs/nixos-24.11";
+
+      home-manager.url = "github:nix-community/home-manager/release-24.11";
+      home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+      xremap-flake.url = "github:xremap/nix-flake";
+    };
+
+    outputs = inputs@{ self, nixpkgs, home-manager, ... }:
+      let
+        lib = nixpkgs.lib;
+        system = "x86_64-linux";
+        pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        ...
+        homeConfigurations = {
+          user = home-manager.lib.homeManagerConfiguration {
+            inherit pkgs;
+            modules = [
+              inputs.xremap-flake.homeManagerModules.default
+              {
+                services.xremap = {
+                  # Modmap for single key rebinds
+                  config.modmap = [{
+                    name = "Global";
+                    remap = { "CapsLock" = "Esc"; };
+                  }];
+
+                  # Keymap for key combo rebinds
+                  config.keymap = [{
+                    name = "Example ctrl-u > pageup rebind";
+                    remap = { "C-u" = "PAGEUP"; };
+                  }];
+                };
+              }
+            ];
+          };
+        };
+      };
+  }
+  ```
+</details>
 
 # Xremap service configuration
 
