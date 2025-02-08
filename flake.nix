@@ -7,8 +7,14 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     # Development deps
-    devshell.url = "github:numtide/devshell";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Utils for building Rust stuff
 
@@ -31,8 +37,12 @@
     };
     hyprland = {
       url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     inputs@{ flake-parts, self, ... }:
