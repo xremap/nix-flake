@@ -603,16 +603,16 @@
     "xremap": {
       "flake": false,
       "locked": {
-        "lastModified": 1737936184,
-        "narHash": "sha256-71Uz2jdiMv5BsEYCqKpueQZrfcdga0wZIxoNKqZyYEo=",
+        "lastModified": 1740382937,
+        "narHash": "sha256-PryH/3oABhrrzVWACNmvq4C4apmwiUcjhaHu2fKQR0g=",
         "owner": "k0kubun",
         "repo": "xremap",
-        "rev": "1dc5ffb369d8f125c1caa8e1ed20d75c34f31c90",
+        "rev": "ee04edd6d6ea7c1224f933f1199901b52452e5f4",
         "type": "github"
       },
       "original": {
         "owner": "k0kubun",
-        "ref": "v0.10.4",
+        "ref": "v0.10.7",
         "repo": "xremap",
         "type": "github"
       }
