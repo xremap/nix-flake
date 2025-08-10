@@ -23,7 +23,7 @@ in
     withKDE = mkEnableOption "support KDE-Plasma Wayland";
     enable = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = "Enable xremap service";
     };
     package = mkOption {
