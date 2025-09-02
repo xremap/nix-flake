@@ -56,4 +56,5 @@ rec {
   xremap-x11 = packageWithFeature "x11";
   xremap-hypr = packageWithFeature "hypr";
   xremap-kde = packageWithFeature "kde";
+  xremap-niri = packageWithFeature "niri";
 }

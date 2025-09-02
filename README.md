@@ -6,10 +6,10 @@ Flake allows running xremap as a system-wide service and as a user service (cont
 
 Flake implements xremap features that allow specifying per-application remapping. Following combinations are tested:
 
-| Scenario | No features | KDE | Gnome | X11 | Wlroots |
-| - | - | - | - | - | - |
-| System | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: |
-| User   | :heavy_check_mark: | :heavy_check_mark: |  :heavy_check_mark:       | :question: | :heavy_check_mark:           |
+| Scenario | No features | KDE | Gnome | X11 | Wlroots | Niri |
+| - | - | - | - | - | - | - |
+| System | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question: |
+| User   | :heavy_check_mark: | :heavy_check_mark: |  :heavy_check_mark:       | :question: | :heavy_check_mark:           | :heavy_check_mark: |
 
 :heavy_check_mark: – tested, works
 :heavy_multiplication_x: – not implemented

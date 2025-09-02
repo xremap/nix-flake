@@ -21,6 +21,7 @@ in
     withHypr = mkEnableOption "support for post-wlroots Hyprland";
     withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, old Hyprland, etc.)";
     withKDE = mkEnableOption "support KDE-Plasma Wayland";
+    withNiri = mkEnableOption "support Niri";
     enable = mkOption {
       type = types.bool;
       default = true;
@@ -51,6 +52,7 @@ in
                   withHypr
                   withWlroots
                   withKDE
+                  withNiri
                   ;
               }
             ) <= 1
@@ -69,6 +71,8 @@ in
           selfPkgs'.xremap-hypr
         else if cfg.withKDE then
           selfPkgs'.xremap-kde
+        else if cfg.withNiri then
+          selfPkgs'.xremap-niri
         else
           selfPkgs'.xremap;
     };
