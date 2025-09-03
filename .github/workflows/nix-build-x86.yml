@@ -21,3 +21,4 @@ jobs:
     - run: nix build .#xremap-sway
     - run: nix build .#xremap-x11
     - run: nix build .#xremap-kde
+    - run: nix build .#xremap-niri
