@@ -48,5 +48,6 @@ with lib;
       description = "Name of user logging into graphical session";
     };
     watch = mkEnableOption "running xremap watching new devices";
-  } // localLib.commonOptions;
+  }
+  // localLib.commonOptions;
 }

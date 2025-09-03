@@ -73,53 +73,52 @@
                   value = pkgs.rustPlatform.rustLibSrc;
                 }
               ];
-              commands =
-                [
-                  {
-                    help = "Build xremap (no features)";
-                    name = "build-xremap-no-features";
-                    command = "nix build .#";
-                  }
-                  {
-                    help = "Build xremap with features one by one";
-                    name = "test-build-all-features";
-                    command = ''
-                      set -euo pipefail
+              commands = [
+                {
+                  help = "Build xremap (no features)";
+                  name = "build-xremap-no-features";
+                  command = "nix build .#";
+                }
+                {
+                  help = "Build xremap with features one by one";
+                  name = "test-build-all-features";
+                  command = ''
+                    set -euo pipefail
 
-                      features=( "gnome" "hypr" "sway" "x11" "wlroots" "kde" )
+                    features=( "gnome" "hypr" "sway" "x11" "wlroots" "kde" )
 
-                      for feature in "''${features[@]}"; do
-                        echo "Building feature $feature"
-                        nix build .#xremap-''${feature}
-                        echo "Build successful"
-                      done
-                    '';
-                  }
-                  {
-                    help = "SSH into the dev VM. Disregards the known hosts file";
-                    name = "vm-ssh";
-                    command = ''ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -p 64022 alice@localhost'';
-                  }
-                ]
-                ++ (
-                  # Construct runners for all development VMs
-                  let
-                    definedVMs = self.nixosConfigurations;
-                    namesOfVMs = builtins.attrNames definedVMs;
-                    getVMcomment =
-                      vmName:
-                      if builtins.hasAttr "_comment" definedVMs.${vmName} then definedVMs.${vmName}._comment else "";
-                  in
-                  map (nixosSystem: {
-                    help = "Run VM for testing ${nixosSystem}";
-                    name = "vm-run-${nixosSystem}";
-                    command = ''
-                      echo "Launching VM"
-                      echo "${getVMcomment nixosSystem}"
-                      nix run .#nixosConfigurations.${nixosSystem}.config.system.build.vm
-                    '';
-                  }) namesOfVMs
-                );
+                    for feature in "''${features[@]}"; do
+                      echo "Building feature $feature"
+                      nix build .#xremap-''${feature}
+                      echo "Build successful"
+                    done
+                  '';
+                }
+                {
+                  help = "SSH into the dev VM. Disregards the known hosts file";
+                  name = "vm-ssh";
+                  command = ''ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -p 64022 alice@localhost'';
+                }
+              ]
+              ++ (
+                # Construct runners for all development VMs
+                let
+                  definedVMs = self.nixosConfigurations;
+                  namesOfVMs = builtins.attrNames definedVMs;
+                  getVMcomment =
+                    vmName:
+                    if builtins.hasAttr "_comment" definedVMs.${vmName} then definedVMs.${vmName}._comment else "";
+                in
+                map (nixosSystem: {
+                  help = "Run VM for testing ${nixosSystem}";
+                  name = "vm-run-${nixosSystem}";
+                  command = ''
+                    echo "Launching VM"
+                    echo "${getVMcomment nixosSystem}"
+                    nix run .#nixosConfigurations.${nixosSystem}.config.system.build.vm
+                  '';
+                }) namesOfVMs
+              );
               packages = builtins.attrValues {
                 inherit (pkgs) cargo rustc rustfmt;
                 inherit (pkgs.rustPackages) clippy;
@@ -128,7 +127,7 @@
             treefmt = {
               projectRootFile = "flake.nix";
               programs = {
-                nixfmt-rfc-style.enable = true;
+                nixfmt.enable = true;
                 statix.enable = true;
                 deadnix.enable = true;
               };
