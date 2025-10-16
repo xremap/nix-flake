@@ -11,14 +11,17 @@
       imports = [
         self.nixosModules.default
         {
-          services.xremap.config.keymap = [
-            {
-              name = "Other remap";
-              remap = {
-                "z" = "q";
-              };
-            }
-          ];
+          services.xremap = {
+            enable = true;
+            config.keymap = [
+              {
+                name = "Other remap";
+                remap = {
+                  "z" = "q";
+                };
+              }
+            ];
+          };
         }
         { services.xremap.debug = true; }
         { systemd.services.xremap.serviceConfig.Environment = [ "FOO=BAR" ]; } # This should get merged.
