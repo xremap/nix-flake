@@ -40,6 +40,8 @@ For all examples in this section you can copy the code into a random `flake.nix`
           {
             users.users.root.password = "hunter2";
             system.stateVersion = "24.05";
+
+            services.xremap.enable = true;
   
             # Modmap for single key rebinds
             services.xremap.config.modmap = [
@@ -92,6 +94,7 @@ For all examples in this section you can copy the code into a random `flake.nix`
             system.stateVersion = "24.05";
             # This configures the service to only run for a specific user
             services.xremap = {
+              enable = true;
               /* NOTE: since this sample configuration does not have any DE, xremap needs to be started manually by systemctl --user start xremap */
               serviceMode = "user";
               userName = "alice";
@@ -164,6 +167,7 @@ For all examples in this section you can copy the code into a random `flake.nix`
   
               /* Enable X11 feature support */
               services.xremap.withX11 = true;
+              services.xremap.enable = true;
               # Modmap for single key rebinds
               services.xremap.config.modmap = [
                 {
@@ -228,6 +232,7 @@ TODO
               inputs.xremap-flake.homeManagerModules.default
               {
                 services.xremap = {
+                  enable = true;
                   # Modmap for single key rebinds
                   config.modmap = [{
                     name = "Global";
@@ -253,7 +258,7 @@ TODO
 
 There are three categories of options:
 
-1. `enabled` option; true by default for mostly historic reasons.
+1. `enable` option; `false` by default. Set it to `true` to enable the service.
 2. Options that enable package features (support for X/Wayland) or service configuration.
 
     Feature flags are:
