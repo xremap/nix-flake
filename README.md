@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> Recent commit set `services.xremap.enable` to `false` by default so that it
+> matches other modules. Make sure to enable the service
+> (`services.xremap.enable = true;`)
+
 # What this is
 
 This is a [Nix flake](https://nixos.wiki/wiki/Flakes) that installs and configures [xremap](https://github.com/k0kubun/xremap).
