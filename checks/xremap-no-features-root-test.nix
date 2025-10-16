@@ -8,14 +8,17 @@
       imports = [
         self.nixosModules.default
         {
-          services.xremap.config.keymap = [
-            {
-              name = "First remap";
-              remap = {
-                "9" = "0";
-              };
-            }
-          ];
+          services.xremap = {
+            enable = true;
+            config.keymap = [
+              {
+                name = "First remap";
+                remap = {
+                  "9" = "0";
+                };
+              }
+            ];
+          };
         }
         {
           services.xremap.config.keymap = [

@@ -13,14 +13,17 @@
       imports = [
         self.nixosModules.default
         {
-          services.xremap.config.keymap = [
-            {
-              name = "Other remap";
-              remap = {
-                "z" = "q";
-              };
-            }
-          ];
+          services.xremap = {
+            enable = true;
+            config.keymap = [
+              {
+                name = "Other remap";
+                remap = {
+                  "z" = "q";
+                };
+              }
+            ];
+          };
         }
         { services.xremap.deviceName = "event0"; }
       ];
