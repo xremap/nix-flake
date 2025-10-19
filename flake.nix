@@ -140,10 +140,7 @@
             localFlake = self;
             inherit withSystem;
           };
-          homeManagerModules.default = importApply ./homeManagerModules {
-            localFlake = self;
-            inherit withSystem;
-          };
+          homeManagerModules.default = importApply ./homeManagerModules { localFlake = self; };
           # nixosConfigurations = import ./nixosConfigurations { localFlake = self; inherit inputs; }; # TODO: restore
           localLib = import ./lib { localFlake = self; };
         };

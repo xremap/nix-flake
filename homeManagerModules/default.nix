@@ -1,4 +1,4 @@
-{ localFlake, withSystem }:
+{ localFlake }:
 {
   config,
   pkgs,
