@@ -24,7 +24,16 @@ in
     withNiri = mkEnableOption "support Niri";
     enable = mkOption {
       type = types.bool;
-      default = false;
+      #  This warning should be emitted <=> default value is used.
+      default = lib.warn ''
+        xremap module is imported but services.xremap.enable is false. As of a flake commit 1448d83, it is false by default.
+
+        This warning is emitted when the module default value (false) is used.
+
+        If you want to enable xremap, set `services.xremap.enable` to `true` in your config.
+
+        If you want to keep the module import but disable the service and suppress the warning, set `services.xremap.enable` to `false`.
+      '' false;
       description = "Enable xremap service";
     };
     package = mkOption {
