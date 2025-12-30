@@ -22,6 +22,7 @@ in
     withWlroots = mkEnableOption "support for wlroots-based compositors (Sway, old Hyprland, etc.)";
     withKDE = mkEnableOption "support KDE-Plasma Wayland";
     withNiri = mkEnableOption "support Niri";
+    withCosmic = mkEnableOption "support Cosmic";
     enable = mkOption {
       type = types.bool;
       #  This warning should be emitted <=> default value is used.
@@ -62,6 +63,7 @@ in
                   withWlroots
                   withKDE
                   withNiri
+                  withCosmic
                   ;
               }
             ) <= 1
@@ -82,6 +84,8 @@ in
           selfPkgs'.xremap-kde
         else if cfg.withNiri then
           selfPkgs'.xremap-niri
+        else if cfg.withCosmic then
+          selfPkgs'.xremap-cosmic
         else
           selfPkgs'.xremap;
     };

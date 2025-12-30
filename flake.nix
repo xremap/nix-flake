@@ -85,7 +85,7 @@
                   command = ''
                     set -euo pipefail
 
-                    features=( "gnome" "hypr" "sway" "x11" "wlroots" "kde" )
+                    features=( "gnome" "hypr" "sway" "x11" "wlroots" "kde" "cosmic" )
 
                     for feature in "''${features[@]}"; do
                       echo "Building feature $feature"

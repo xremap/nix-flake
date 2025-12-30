@@ -57,4 +57,5 @@ rec {
   xremap-hypr = packageWithFeature "hypr";
   xremap-kde = packageWithFeature "kde";
   xremap-niri = packageWithFeature "niri";
+  xremap-cosmic = packageWithFeature "cosmic";
 }

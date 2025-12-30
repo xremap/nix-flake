@@ -16,10 +16,10 @@ Note that flakes are required. If there is a demand for non-flake-based modules
 There are two main ways of running xremap -- as a system service or as a user
 service. Not all combinations of mode x desktop environment are supported:
 
-| Scenario | No features        | KDE                      | Gnome                    | X11                | Wlroots                  | Niri               |
-| -------- | ------------------ | ------------------------ | ------------------------ | ------------------ | ------------------------ | ------------------ |
-| System   | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question:         |
-| User     | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       | :question:         | :heavy_check_mark:       | :heavy_check_mark: |
+| Scenario | No features        | KDE                      | Gnome                    | X11                | Wlroots                  | Niri               | Cosmic     |
+| -------- | ------------------ | ------------------------ | ------------------------ | ------------------ | ------------------------ | ------------------ | ---------- |
+| System   | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question:         | :question: |
+| User     | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       | :question:         | :heavy_check_mark:       | :heavy_check_mark: | :question: |
 
 :heavy_check_mark: – tested, works :heavy_multiplication_x: – not implemented
 :question: – not tested
@@ -291,6 +291,7 @@ There are three categories of options:
    - `withKDE`, `bool` – whether to enable KDE wayland support
    - `withHypr`, `bool` – whether to enable non-wlroots based Hyprland support
    - `withNiri`, `bool` – whether to enable Niri support
+   - `withCosmic`, `bool` – whether to enable Cosmic support
 
    All of them are false by default, which means no application-specific remaps
    work as xremap does not know which application is being used.
