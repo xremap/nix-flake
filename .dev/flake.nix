@@ -3,13 +3,19 @@
 
   inputs = {
     parent.url = ./..;
-    devshell.url = "github:numtide/devshell";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
