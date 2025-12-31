@@ -8,17 +8,12 @@ on:
 jobs:
   nix-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
-    - uses: actions/checkout@v3
-    - uses: cachix/install-nix-action@v27
-    # Maybe TODO
-    # - run: nix flake check
-    # Explicitly build all features
-    - run: nix build .#
-    - run: nix build .#xremap-wlroots
-    - run: nix build .#xremap-gnome
-    - run: nix build .#xremap-hypr
-    - run: nix build .#xremap-sway
-    - run: nix build .#xremap-x11
-    - run: nix build .#xremap-kde
-    - run: nix build .#xremap-niri
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Formatting check
+        run: nix develop .dev#ci --command build-all-features
