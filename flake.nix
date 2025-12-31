@@ -45,7 +45,6 @@
           { config, pkgs, ... }:
           let
             craneLib = inputs.crane.mkLib pkgs;
-            inherit (pkgs) lib;
           in
           {
             packages = import ./overlay {
@@ -55,7 +54,6 @@
             # This way all packages get immediately added to the overlay except for the one called literally called "default"
             overlayAttrs = builtins.removeAttrs config.packages [ "default" ];
 
-            checks = import ./checks { inherit self pkgs lib; };
           };
         flake = {
           nixosModules.default = importApply ./modules {
