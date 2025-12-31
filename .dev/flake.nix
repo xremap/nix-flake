@@ -50,7 +50,10 @@
             inherit (pkgs) lib;
           in
           {
-            devshells = import ./devshell.nix { inherit config; };
+            devshells = import ./devshell.nix {
+              inherit config;
+              inherit (pkgs) lib;
+            };
 
             treefmt = {
               projectRootFile = "flake.nix";
