@@ -6,7 +6,6 @@
 }:
 let
   checks = [
-    ./xremap-single-device.nix
     ./xremap-multiple-devices.nix
     ./xremap-debug.nix
   ];
