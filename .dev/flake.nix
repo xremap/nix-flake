@@ -3,7 +3,10 @@
 
   inputs = {
     parent.url = ./..;
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # This will reduce the number of `nixpkgs` instances floating around
+    # Requires `nix flake update --inputs-from ..`
+    thisNixpkgs.url = "nixpkgs";
+    nixpkgs.follows = "thisNixpkgs";
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
