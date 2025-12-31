@@ -33,7 +33,7 @@
         help = "Build xremap with features one by one";
         name = "build-all-features";
         command = /* bash */ ''
-          features=( "gnome" "hypr" "sway" "x11" "wlroots" "kde" "cosmic" )
+          features=( "gnome" "hypr" "x11" "wlroots" "kde" "cosmic" )
 
           for feature in "''${features[@]}"; do
           echo "Building feature $feature"
