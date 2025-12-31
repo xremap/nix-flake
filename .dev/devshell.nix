@@ -3,7 +3,7 @@
 */
 _:
 {
-  defalult = {
+  default = {
     commands = [ ];
     /**
       If needed, this block can be restored to add rust building stuff
