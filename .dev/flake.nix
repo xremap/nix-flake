@@ -33,10 +33,7 @@
             inherit (pkgs) lib;
           in
           {
-            devshells.default = {
-              commands = [ ];
-            };
-
+            devshells = import ./devshell.nix { };
             apps = {
               wlroots-hyprland-demo = {
                 type = "app";
