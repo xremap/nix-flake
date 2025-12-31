@@ -6,8 +6,16 @@
   users.users.alice = {
     isNormalUser = true;
     password = "hunter2";
-    extraGroups = [ "input" ];
+    extraGroups = [
+      "input"
+      "wheel"
+    ];
   };
   # Fonts will likely be necessary for UI stuff
   fonts.enableDefaultPackages = true;
+
+  security.sudo = {
+    wheelNeedsPassword = false;
+    execWheelOnly = true;
+  };
 }
