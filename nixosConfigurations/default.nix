@@ -112,66 +112,6 @@ in
     // {
       _comment = "Run startx after autologin.";
     };
-  # x11-user = abort "Tested ad-hoc";
-  # hypr-system = abort "Not implemented";
-  hypr-user =
-    mkDevSystem {
-      hostName = "hypr-user";
-      customModules = [
-        # Autologin
-        { services.getty.autologinUser = "alice"; }
-        inputs.hyprland.nixosModules.default
-        inputs.home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            users.alice =
-              { ... }:
-              {
-                imports = [ inputs.hyprland.homeManagerModules.default ];
-              };
-          };
-        }
-        {
-          services.xremap = {
-            withHypr = true;
-            serviceMode = "user";
-          };
-        }
-        ./hypr-common.nix
-      ];
-    }
-    // {
-      _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test.";
-    };
-  hypr-wlroots-user =
-    mkDevSystem {
-      hostName = "hypr-wlroots-user";
-      customModules = [
-        # Autologin
-        { services.getty.autologinUser = "alice"; }
-        inputs.hyprland.nixosModules.default
-        inputs.home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            users.alice =
-              { ... }:
-              {
-                imports = [ inputs.hyprland.homeManagerModules.default ];
-              };
-          };
-        }
-        {
-          services.xremap = {
-            withWlroots = true;
-            serviceMode = "user";
-          };
-        }
-        ./hypr-common.nix
-      ];
-    }
-    // {
-      _comment = "Login with the user's password and run 'Hyprland' in tty. Launch Kitty and test.";
-    };
   testAssertFail = mkDevSystem {
     hostName = "testAssertFail";
     customModules = [ { services.xremap.config = pkgs.lib.mkForce { }; } ];
