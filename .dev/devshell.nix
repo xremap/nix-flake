@@ -1,8 +1,7 @@
 /**
   Configures development shell for the subflake.
 */
-_:
-{
+_: {
   default = {
     commands = [ ];
     /**
