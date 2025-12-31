@@ -1,9 +1,15 @@
 /**
   Configures development shell for the subflake.
 */
-_: {
+{ config, ... }:
+{
   default = {
-    commands = [ ];
+    commands = [
+      {
+        help = "Run the CI formatter locally";
+        package = config.treefmt.build.wrapper;
+      }
+    ];
     /**
       If needed, this block can be restored to add rust building stuff
       ```
