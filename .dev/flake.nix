@@ -56,7 +56,7 @@
               };
             };
             apps = {
-              wlroots-hyprland-demo = {
+              demo-wlroots-hyprland = {
                 type = "app";
                 program = lib.pipe ./demos/wlroots-hyprland.nix [
                   (it: import it { inherit self; })
@@ -66,11 +66,11 @@
               };
             };
 
-            packages = inputs'.parent.packages;
+            inherit (inputs'.parent) packages;
 
             checks = lib.pipe ./checks [
               (lib.fileset.fileFilter (file: file.hasExt "nix"))
-              (lib.fileset.toList)
+              lib.fileset.toList
               (map (it: {
                 # Construct a human-readable name
                 name = lib.pipe it [
@@ -84,7 +84,7 @@
                   (lib.flip pkgs.callPackage { })
                 ];
               }))
-              (builtins.listToAttrs)
+              builtins.listToAttrs
             ];
           };
         flake = {
