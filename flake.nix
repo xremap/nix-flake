@@ -29,9 +29,6 @@
       url = "github:k0kubun/xremap?ref=v0.14.8";
       flake = false;
     };
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-    };
     home-manager.url = "github:nix-community/home-manager";
   };
   outputs =
