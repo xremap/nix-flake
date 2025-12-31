@@ -1,7 +1,7 @@
 /**
   Configures development shell for the subflake.
 */
-{ config, ... }:
+{ config, lib, ... }:
 {
   default = {
     commands = [
@@ -22,6 +22,13 @@
   };
   ci = {
     commands = [
+      {
+        help = "Check formatting, fail on changes";
+        name = "fmt";
+        command = /* bash */ ''
+          ${lib.getExe config.treefmt.build.wrapper} --ci
+        '';
+      }
       {
         help = "Build xremap with features one by one";
         name = "build-all-features";
