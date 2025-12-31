@@ -53,6 +53,8 @@
 
             treefmt = {
               projectRootFile = "flake.nix";
+              # When run in CI, will have `treefmt` check the whole repo
+              projectRoot = inputs.parent;
               programs = {
                 nixfmt.enable = true;
                 statix.enable = true;
