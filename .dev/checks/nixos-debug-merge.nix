@@ -2,10 +2,11 @@
   Tests setting the debug value and that it properly merges with hand-set variables.
 */
 { self, ... }:
-{
+{ testers }:
+testers.runNixOSTest {
   name = "xremap-debug";
   nodes.machine1 =
-    { config, ... }:
+    { ... }:
     {
       services.getty.autologinUser = "root";
       imports = [
