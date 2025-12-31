@@ -6,7 +6,6 @@
 }:
 let
   checks = [
-    ./xremap-multiple-devices.nix
     ./xremap-debug.nix
   ];
   inherit (lib) pipe;

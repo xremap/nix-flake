@@ -1,13 +1,14 @@
 /**
-  Checks that --deviceNames (plural) option creates a working xremap configuration.
+  Checks that `--deviceNames` (plural) option creates a working `xremap` configuration.
 
-  Starts the VM and checks the ExecStart value of the systemd unit.
+  Starts the VM and checks the `ExecStart` value of the Systemd unit.
 */
 { self, ... }:
-{
+{ testers }:
+testers.runNixOSTest {
   name = "xremap-single-device";
   nodes.machine1 =
-    { config, ... }:
+    { ... }:
     {
       services.getty.autologinUser = "root";
       imports = [
@@ -27,7 +28,7 @@
         }
         {
           services.xremap.deviceNames = [
-            # Always present in qemu
+            # Always present in QEMU
             "event0"
             "event1"
           ];
