@@ -65,16 +65,34 @@
                 deadnix.enable = true;
               };
             };
-            apps = {
-              demo-wlroots-hyprland = {
-                type = "app";
-                program = lib.pipe ./demos/wlroots-hyprland.nix [
-                  (it: import it { inherit self; })
-                  (lib.flip pkgs.callPackage { })
-                  (builtins.getAttr "driverInteractive")
-                ];
-              };
-            };
+
+            apps =
+              # Construct demos
+              (
+                lib.pipe ./demos [
+                  (lib.fileset.fileFilter (file: file.hasExt "nix"))
+                  lib.fileset.toList
+                  (map (it: {
+                    # Construct a human-readable name
+                    name = lib.pipe it [
+                      builtins.toString
+                      builtins.baseNameOf
+                      (lib.replaceStrings [ ".nix" ] [ "" ])
+                      (it: "demo-${it}")
+                    ];
+                    # Create the `{type="app"; program = ...}` attrset}
+                    value = {
+                      type = "app";
+                      program = lib.pipe it [
+                        (it: import it { inherit self; })
+                        (lib.flip pkgs.callPackage { })
+                        (builtins.getAttr "driverInteractive")
+                      ];
+                    };
+                  }))
+                  builtins.listToAttrs
+                ]
+              );
 
             inherit (inputs'.parent) packages;
 
