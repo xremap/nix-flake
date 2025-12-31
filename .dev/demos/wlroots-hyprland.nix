@@ -12,35 +12,16 @@
   5. Hit `alt-a` and `alt-9` to see changed bindings
 */
 { self, ... }:
-{ testers, ... }:
+{ testers }:
 testers.runNixOSTest {
   name = "Wlroots-hyprland-demo";
 
   nodes.machine =
     { lib, pkgs, ... }:
     {
-      services.getty.autologinUser = "alice";
-      users.users.alice = {
-        isNormalUser = true;
-        password = "hunter2";
-        extraGroups = [ "input" ];
-      };
-      hardware.uinput.enable = true;
-      services.udev = {
-        # `xremap` requires this:
-        # https://github.com/xremap/xremap?tab=readme-ov-file#running-xremap-without-sudo
-        extraRules = ''
-          KERNEL=="uinput", GROUP="input", TAG+="uaccess"
-        '';
-      };
-      # Provide _some_ monospace font
-      fonts.enableDefaultPackages = true;
-      environment.systemPackages = [ pkgs.fontconfig ];
-
       # Hyprland-specific
       hardware.graphics.enable = true;
       home-manager.users.alice = {
-        imports = [ self.homeManagerModules.default ];
         home.stateVersion = "25.11";
         wayland.windowManager.hyprland.enable = true;
         wayland.windowManager.hyprland.extraConfig = ''
@@ -49,9 +30,16 @@ testers.runNixOSTest {
         '';
       };
 
+      # Imports
+      imports = [
+        ../common/common-setup.nix
+        ../common/setup-uinput.nix
+        self.inputs.home-manager.nixosModules.home-manager
+      ];
+
       # `xremap` config is here
-      imports = [ self.inputs.home-manager.nixosModules.home-manager ];
       home-manager.users.alice = {
+        imports = [ self.homeManagerModules.default ];
         services.xremap = {
           enable = true;
           withWlroots = true;
