@@ -94,16 +94,4 @@ in
     // {
       _comment = "This VM should not run successfully; shows an error message about multiple with*";
     };
-  kde-wayland-user = mkDevSystem {
-    hostName = "kde-wayland-user";
-    customModules = [
-      {
-        services.xremap = {
-          withKDE = true;
-          serviceMode = "user";
-        };
-      }
-      ./kde-common.nix
-    ];
-  };
 }
