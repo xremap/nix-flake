@@ -5,6 +5,7 @@
     parent.url = ./..;
     # This will reduce the number of `nixpkgs` instances floating around
     # Requires `nix flake update --inputs-from ..`
+    # Note that `nixpkgs.follows = "nixpkgs"` will not work, it will cause a loop
     thisNixpkgs.url = "nixpkgs";
     nixpkgs.follows = "thisNixpkgs";
     devshell = {
