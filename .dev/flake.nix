@@ -99,7 +99,7 @@
           };
         flake = {
           # Re-export so that they can be passed to other parts of the subflake
-          inherit (inputs.parent) homeManagerModules;
+          inherit (inputs.parent) homeManagerModules nixosModules;
         };
       }
     );
