@@ -43,13 +43,14 @@
           {
             inputs',
             pkgs,
+            config,
             ...
           }:
           let
             inherit (pkgs) lib;
           in
           {
-            devshells = import ./devshell.nix { };
+            devshells = import ./devshell.nix { inherit config; };
 
             treefmt = {
               projectRootFile = "flake.nix";
