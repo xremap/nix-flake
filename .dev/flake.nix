@@ -49,6 +49,25 @@
             };
 
             packages = inputs'.parent.packages;
+
+            checks = lib.pipe ./checks [
+              (lib.fileset.fileFilter (file: file.hasExt "nix"))
+              (lib.fileset.toList)
+              (map (it: {
+                # Construct a human-readable name
+                name = lib.pipe it [
+                  builtins.toString
+                  builtins.baseNameOf
+                  (lib.replaceStrings [ ".nix" ] [ "" ])
+                ];
+                # Construct the package to be called as a check
+                value = lib.pipe it [
+                  (it': import it' { inherit self; })
+                  (lib.flip pkgs.callPackage { })
+                ];
+              }))
+              (builtins.listToAttrs)
+            ];
           };
         flake = {
           # Re-export so that they can be passed to `packages`

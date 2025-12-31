@@ -29,7 +29,6 @@
       url = "github:k0kubun/xremap?ref=v0.14.8";
       flake = false;
     };
-    home-manager.url = "github:nix-community/home-manager";
   };
   outputs =
     inputs@{ flake-parts, self, ... }:
