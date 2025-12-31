@@ -5,7 +5,10 @@
     parent.url = ./..;
     devshell.url = "github:numtide/devshell";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager.url = "github:nix-community/home-manager";
   };
 
@@ -18,7 +21,10 @@
     parentInputs.flake-parts.lib.mkFlake { inherit inputs; } (
       { ... }: # Here be flake-parts-lib if I ever need it
       {
-        imports = [ inputs.devshell.flakeModule ];
+        imports = [
+          inputs.devshell.flakeModule
+          inputs.treefmt-nix.flakeModule
+        ];
         systems = [
           "x86_64-linux"
           "aarch64-linux"
@@ -34,6 +40,15 @@
           in
           {
             devshells = import ./devshell.nix { };
+
+            treefmt = {
+              projectRootFile = "flake.nix";
+              programs = {
+                nixfmt.enable = true;
+                statix.enable = true;
+                deadnix.enable = true;
+              };
+            };
             apps = {
               wlroots-hyprland-demo = {
                 type = "app";

@@ -6,8 +6,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
 
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-
     # Utils for building Rust stuff
 
     crane.url = "github:ipetkov/crane";
@@ -38,7 +36,6 @@
       {
         imports = [
           inputs.flake-parts.flakeModules.easyOverlay
-          inputs.treefmt-nix.flakeModule
         ];
         systems = [
           "x86_64-linux"
@@ -58,14 +55,6 @@
             # This way all packages get immediately added to the overlay except for the one called literally called "default"
             overlayAttrs = builtins.removeAttrs config.packages [ "default" ];
 
-            treefmt = {
-              projectRootFile = "flake.nix";
-              programs = {
-                nixfmt.enable = true;
-                statix.enable = true;
-                deadnix.enable = true;
-              };
-            };
             checks = import ./checks { inherit self pkgs lib; };
           };
         flake = {
