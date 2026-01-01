@@ -37,7 +37,7 @@
         ];
         systems = [
           "x86_64-linux"
-          "aarch64-linux"
+          "aarch64-linux" # NOTE: demos are not available for this architecture. If there is an ask, they can be implemented.
         ];
         perSystem =
           {
@@ -66,33 +66,10 @@
               };
             };
 
-            apps =
-              # Construct demos
-              (
-                lib.pipe ./demos [
-                  (lib.fileset.fileFilter (file: file.hasExt "nix"))
-                  lib.fileset.toList
-                  (map (it: {
-                    # Construct a human-readable name
-                    name = lib.pipe it [
-                      builtins.toString
-                      builtins.baseNameOf
-                      (lib.replaceStrings [ ".nix" ] [ "" ])
-                      (it: "demo-${it}")
-                    ];
-                    # Create the `{type="app"; program = ...}` attrset}
-                    value = {
-                      type = "app";
-                      program = lib.pipe it [
-                        (it: import it { inherit self; })
-                        (lib.flip pkgs.callPackage { })
-                        (builtins.getAttr "driverInteractive")
-                      ];
-                    };
-                  }))
-                  builtins.listToAttrs
-                ]
-              );
+            apps = lib.mapAttrs (name: value: {
+              type = "app";
+              program = value.config.system.build.vm;
+            }) self.nixosConfigurations;
 
             inherit (inputs'.parent) packages;
 
@@ -115,10 +92,38 @@
               builtins.listToAttrs
             ];
           };
-        flake = {
-          # Re-export so that they can be passed to other parts of the subflake
-          inherit (inputs.parent) homeManagerModules nixosModules;
-        };
+        flake =
+          let
+            inherit (inputs.nixpkgs) lib;
+          in
+          {
+            # Re-export so that they can be passed to other parts of the subflake
+            inherit (inputs.parent) homeManagerModules nixosModules;
+
+            nixosConfigurations = (
+              lib.pipe ./demo-nixos-configurations [
+                (lib.fileset.fileFilter (file: file.hasExt "nix"))
+                lib.fileset.toList
+                (map (it: {
+                  # Construct a human-readable name
+                  name = lib.pipe it [
+                    builtins.toString
+                    builtins.baseNameOf
+                    (lib.replaceStrings [ ".nix" ] [ "" ])
+                    (it: "demo-${it}")
+                  ];
+                  value = lib.nixosSystem {
+                    modules = [
+                      { nixpkgs.hostPlatform = "x86_64-linux"; }
+                      { system.stateVersion = "25.11"; }
+                      (import it { inherit self; })
+                    ];
+                  };
+                }))
+                builtins.listToAttrs
+              ]
+            );
+          };
       }
     );
 }
