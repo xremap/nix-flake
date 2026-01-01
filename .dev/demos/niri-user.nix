@@ -1,32 +1,27 @@
 /**
-  Tests that this flake can be used with Niri.
+  A demo of `xremap` running in Niri.
 
-  NOTE: this check does _NOT_ run automatically. Looks like NixOS testing
-  framework runs without the graphics that are required to test this properly.
-  See comments for `virtualisation.qemu.options` below.
+  To run the demo:
+
+  1. Run the test interactively
+  2. Run `start_all()`
+  3. Launch standard terminal and kitty (`ctrl-t`/`ctrl-shift-t`)
+  4. Hit `alt-a` and `alt-9` to see changed bindings
 */
 
 { self, ... }:
-{
+{ testers, ... }:
+testers.runNixOSTest {
   name = "xremap-niri-user";
   nodes.machine1 =
     {
       pkgs,
       lib,
+      config,
       ...
     }:
     {
-      services.getty.autologinUser = "alice";
-      users.users.alice = {
-        isNormalUser = true;
-        password = "hunter2";
-        extraGroups = [ "input" ];
-      };
-
-      environment.systemPackages = [
-        self.packages.${pkgs.system}.xremap-niri
-      ];
-
+      # Niri setup
       environment.etc = {
         "niri/config.kdl".text = ''
           binds {
@@ -37,7 +32,7 @@
       };
 
       virtualisation.graphics = true;
-      # Niri needs very specific graphical options to run in qemu:
+      # Niri needs very specific graphical options to run in QEMU:
       # https://discourse.nixos.org/t/nixos-build-vm-niri/61155
       virtualisation.qemu.options = [
         "-device virtio-vga-gl"
@@ -45,34 +40,54 @@
       ];
       hardware.graphics.enable = true;
 
-      hardware.uinput.enable = true;
-      services.udev.extraRules = ''
-        KERNEL=="uinput", GROUP="input", TAG+="uaccess"
-      '';
+      imports = [
+        ../common/common-setup.nix
+        ../common/setup-uinput.nix
+        self.nixosModules.default
+      ];
 
       programs.niri.enable = true;
 
-      imports = [
-        self.nixosModules.default
-        { services.xremap.enable = true; }
-        { services.xremap.withNiri = true; }
-        {
-          services.xremap.userName = "alice";
-          services.xremap.serviceMode = "user";
-        }
-        {
-          services.xremap.config.keymap = [
+      services.greetd = {
+        enable = true;
+        settings = rec {
+          # Effectively auto-login
+          default_session = initial_session;
+          initial_session = {
+            command = "${config.programs.niri.package}/bin/niri-session";
+            user = "alice";
+          };
+        };
+      };
+
+      # TODO: make this part of the module
+      systemd.user.services.xremap.after = [ "niri.service" ];
+
+      services.xremap = {
+        enable = true;
+        withNiri = true;
+        serviceMode = "user";
+        userName = "alice";
+        config = {
+          keymap = [
             {
-              name = "Example rebind, only for specific application";
-              remap = {
-                "z" = "q";
+              name = "Remap 'alt-a' to 'b' in kitty";
+              application = {
+                "only" = "kitty";
               };
-              application.only = [ "kitty" ];
+              remap = {
+                "ALT-a" = "b";
+              };
+            }
+            {
+              name = "Remap 'alt-9' to '0' everywhere";
+              remap = {
+                "ALT-9" = "0";
+              };
             }
           ];
-        }
-      ];
-
+        };
+      };
     };
 
   testScript =
