@@ -9,7 +9,7 @@
   4. Hit `alt-a` and `alt-9` to see changed bindings
 */
 { self, ... }:
-{ pkgs, modulesPath, ... }:
+{ pkgs, ... }:
 {
   # Gnome setup
   services.xserver = {
@@ -25,8 +25,6 @@
       user = "alice";
     };
   };
-  # OOMs otherwise
-  virtualisation.memorySize = 2048;
 
   # Enable xremap gnome extension
   systemd.user.services.enable-xremap-extension = {
@@ -47,9 +45,8 @@
 
   imports = [
     ../common/common-setup.nix
+    ../common/qemu-graphics.nix
     self.nixosModules.default
-    (modulesPath + "/virtualisation/qemu-vm.nix") # adds '`virtualisation`' options
-
   ];
 
   services.xremap = {

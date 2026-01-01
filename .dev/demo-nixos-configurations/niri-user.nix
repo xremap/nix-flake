@@ -10,7 +10,6 @@
 {
   pkgs,
   lib,
-  modulesPath,
   config,
   ...
 }:
@@ -25,22 +24,11 @@
     '';
   };
 
-  # QEMU specific, adds graphics needed for Niri
-  virtualisation.graphics = true;
-  # Niri needs very specific graphical options to run in QEMU:
-  # https://discourse.nixos.org/t/nixos-build-vm-niri/61155
-  # QEMU used for the standard test runner is not built with these.
-  virtualisation.qemu.options = [
-    "-device virtio-vga-gl"
-    "-display gtk,gl=on"
-  ];
-  hardware.graphics.enable = true;
-
   imports = [
     ../common/common-setup.nix
     ../common/setup-uinput.nix
+    ../common/qemu-graphics.nix
     self.nixosModules.default
-    (modulesPath + "/virtualisation/qemu-vm.nix")  # adds '`virtualisation`' options
   ];
 
   programs.niri.enable = true;
