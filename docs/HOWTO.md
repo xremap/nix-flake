@@ -33,13 +33,18 @@ nix run github:xremap/nix-flake?dir=.dev#demo-x11-user
 There are two main ways of running xremap -- as a system service or as a user
 service. Not all combinations of mode x desktop environment are supported:
 
-| Scenario | No features        | KDE                      | Gnome                    | X11                | Wlroots                  | Niri               | Cosmic     |
+<!-- `> cat ./compatibility-matrix.md` -->
+
+<!-- BEGIN mdsh -->
+| Mode     | No features        | KDE                      | Gnome                    | X11                | Wlroots                  | Niri               | Cosmic     |
 | -------- | ------------------ | ------------------------ | ------------------------ | ------------------ | ------------------------ | ------------------ | ---------- |
 | System   | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question:         | :question: |
-| User     | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       | :question:         | :heavy_check_mark:       | :heavy_check_mark: | :question: |
+| User     | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark: | :question: |
 
-:heavy_check_mark: – tested, works :heavy_multiplication_x: – not implemented
-:question: – not tested
+- :heavy_check_mark: – tested, works
+- :heavy_multiplication_x: – not implemented
+- :question: – implemented, not tested
+<!-- END mdsh -->
 
 For all examples in this section you can copy the code into a random `flake.nix`
 on your machine and run it in a VM as

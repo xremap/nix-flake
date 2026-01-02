@@ -10,15 +10,18 @@ This is a [Nix flake](https://nixos.wiki/wiki/Flakes) that installs and configur
 Flake allows running xremap as a system-wide service and as a user service (controlled by `services.xremap.serviceMode` option).
 
 Flake implements xremap features that allow specifying per-application remapping. Following combinations are tested:
+<!-- `> cat ./docs/compatibility-matrix.md` -->
 
-| Scenario | No features | KDE | Gnome | X11 | Wlroots | Niri | Cosmic |
-| - | - | - | - | - | - | - | - |
-| System | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question: | :question: |
-| User   | :heavy_check_mark: | :heavy_check_mark: |  :heavy_check_mark:       | :question: | :heavy_check_mark:           | :heavy_check_mark: | :question: |
+<!-- BEGIN mdsh -->
+| Mode     | No features        | KDE                      | Gnome                    | X11                | Wlroots                  | Niri               | Cosmic     |
+| -------- | ------------------ | ------------------------ | ------------------------ | ------------------ | ------------------------ | ------------------ | ---------- |
+| System   | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question:         | :question: |
+| User     | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark: | :question: |
 
-:heavy_check_mark: – tested, works
-:heavy_multiplication_x: – not implemented
-:question: – not tested
+- :heavy_check_mark: – tested, works
+- :heavy_multiplication_x: – not implemented
+- :question: – implemented, not tested
+<!-- END mdsh -->
 
 # How to use
 
