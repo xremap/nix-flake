@@ -3,10 +3,8 @@
 
   To run the demo:
 
-  1. Run the test interactively
-  2. Run `start_all()`
-  3. Launch standard terminal and kitty
-  4. Hit `alt-a` and `alt-9` to see changed bindings
+  1. Launch standard terminal and kitty
+  2. Hit `alt-a` and `alt-9` to see changed bindings
 */
 { self, ... }:
 { pkgs, ... }:
