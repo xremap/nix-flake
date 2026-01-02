@@ -10,13 +10,7 @@ testers.runNixOSTest {
     {
       imports = [
         (import ../demo-nixos-configurations/x11-system.nix { inherit self; })
-        { virtualisation.qemu.networkingOptions = [ ]; }
-        {
-          systemd.network.wait-online.enable = false;
-          networking.useDHCP = false;
-          networking.interfaces = { };
-          systemd.services.network-setup.enable = false;
-        }
+        ../common/no-network-in-tests.nix
         {
           services.xremap.config.keymap = [
             {

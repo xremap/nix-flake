@@ -11,6 +11,7 @@ testers.runNixOSTest {
       services.getty.autologinUser = "root";
       imports = [
         self.nixosModules.default
+        ../common/no-network-in-tests.nix
         {
           services.xremap = {
             enable = true;

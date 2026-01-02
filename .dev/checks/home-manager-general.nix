@@ -15,6 +15,7 @@ testers.runNixOSTest {
       imports = [
         ../common/common-setup.nix
         ../common/setup-uinput.nix
+        ../common/no-network-in-tests.nix
         self.inputs.home-manager.nixosModules.home-manager
       ];
 
