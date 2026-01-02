@@ -32,10 +32,7 @@ See [HOWTO](./docs/HOWTO.md) for more information and sample configs.
 
 # Development
 
-The nix flake comes with a few VM presets that can be used to test some of the combinations. To run a specific VM:
+The subflake in `.dev` that includes the CI config, formatters, linters,
+automatic tests and demos.
 
-```shell
-nix run '.#nixosConfigurations.hyprland-user-dev.config.system.build.vm
-```
-
-where `hyprland-user-dev` is the name of the `nixosConfiguration` you want to launch
+The `.envrc` file bundled in the repo loads the development shell automatically.

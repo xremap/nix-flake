@@ -9,7 +9,24 @@ Regardless of the chosen approach, the installation consists of:
 2. Configuring xremap
 
 Note that flakes are required. If there is a demand for non-flake-based modules
--- please feel free to submit an issue.
+– please feel free to submit an issue.
+
+## Runnable demos
+
+The flake comes with a set of self-contained NixOS configurations that can be
+run directly:
+
+<!-- `$ nix flake show --json ../.dev 2>/dev/null | jq -r '.nixosConfigurations | keys | map("nix run github:xremap/nix-flake?dir=.dev#"+.)| .[]'` -->
+
+```
+nix run github:xremap/nix-flake?dir=.dev#demo-gnome-user
+nix run github:xremap/nix-flake?dir=.dev#demo-kde-user
+nix run github:xremap/nix-flake?dir=.dev#demo-niri-user
+nix run github:xremap/nix-flake?dir=.dev#demo-wlroots-hyprland
+nix run github:xremap/nix-flake?dir=.dev#demo-wlroots-sway-user
+nix run github:xremap/nix-flake?dir=.dev#demo-x11-system
+nix run github:xremap/nix-flake?dir=.dev#demo-x11-user
+```
 
 ## NixOS
 
@@ -215,7 +232,6 @@ controlled (e.g. home-manager cannot add the user to `uinput`), additional steps
 may be needed. See [upstream](https://github.com/k0kubun/xremap) for more
 information.
 
-TODO
 
 <details>
   <summary>
