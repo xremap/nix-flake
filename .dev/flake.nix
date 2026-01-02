@@ -42,6 +42,7 @@
         perSystem =
           {
             inputs',
+            self',
             pkgs,
             config,
             ...
@@ -51,7 +52,7 @@
           in
           {
             devshells = import ./devshell.nix {
-              inherit config;
+              inherit config self';
               inherit (pkgs) lib;
             };
 
