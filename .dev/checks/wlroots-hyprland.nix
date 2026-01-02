@@ -1,7 +1,7 @@
 { self, ... }:
 { testers, procps }:
 testers.runNixOSTest {
-  name = "home-manager general check";
+  name = "Test wlroots-hyprland with home manager";
 
   skipTypeCheck = true;
 
