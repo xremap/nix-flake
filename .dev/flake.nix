@@ -69,6 +69,7 @@
 
             apps = lib.mapAttrs (name: value: {
               type = "app";
+              meta.description = "Run the ${name} demo";
               program = value.config.system.build.vm;
             }) self.nixosConfigurations;
 
@@ -117,6 +118,11 @@
                     modules = [
                       { nixpkgs.hostPlatform = "x86_64-linux"; }
                       { system.stateVersion = "25.11"; }
+                      # Fake attributes just to let `nix flake check` pass
+                      {
+                        fileSystems."/".device = "/dev/hda1";
+                        boot.loader.grub.devices = [ "/dev/hda1" ];
+                      }
                       (import it { inherit self; })
                     ];
                   };
