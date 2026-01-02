@@ -1,7 +1,12 @@
 /**
   Configures development shell for the subflake.
 */
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  self',
+  ...
+}:
 {
   default = {
     commands = [
@@ -9,7 +14,16 @@
         help = "Run the CI formatter locally";
         package = config.treefmt.build.wrapper;
       }
-    ];
+    ]
+    ++ (lib.pipe self'.apps [
+      builtins.attrNames
+      (map (app: {
+        name = app;
+        command = "(cd $PRJ_ROOT && nix run .#${app})";
+        help = "Run this flake's app '${app}'";
+        category = "flake apps";
+      }))
+    ]);
     /**
       If needed, this block can be restored to add rust building stuff
       ```
