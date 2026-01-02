@@ -24,7 +24,7 @@ testers.runNixOSTest {
               remap."9" = "0";
             }
           ];
-        } # Add xremap remap 9->0 z->a
+        }
       ];
     };
 
