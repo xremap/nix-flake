@@ -102,8 +102,7 @@
             # Re-export so that they can be passed to other parts of the subflake
             inherit (inputs.parent) homeManagerModules nixosModules;
 
-            nixosConfigurations = (
-              lib.pipe ./demo-nixos-configurations [
+            nixosConfigurations = lib.pipe ./demo-nixos-configurations [
                 (lib.fileset.fileFilter (file: file.hasExt "nix"))
                 lib.fileset.toList
                 (map (it: {
@@ -128,8 +127,7 @@
                   };
                 }))
                 builtins.listToAttrs
-              ]
-            );
+              ];
           };
       }
     );

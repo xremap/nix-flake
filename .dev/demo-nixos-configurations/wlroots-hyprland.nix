@@ -9,7 +9,12 @@
   2. Hit `alt-a` and `alt-9` to see changed bindings
 */
 { self, ... }:
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 {
   # Hyprland-specific
   hardware.graphics.enable = true;
