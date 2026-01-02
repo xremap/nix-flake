@@ -103,31 +103,31 @@
             inherit (inputs.parent) homeManagerModules nixosModules;
 
             nixosConfigurations = lib.pipe ./demo-nixos-configurations [
-                (lib.fileset.fileFilter (file: file.hasExt "nix"))
-                lib.fileset.toList
-                (map (it: {
-                  # Construct a human-readable name
-                  name = lib.pipe it [
-                    builtins.toString
-                    builtins.baseNameOf
-                    (lib.replaceStrings [ ".nix" ] [ "" ])
-                    (it: "demo-${it}")
+              (lib.fileset.fileFilter (file: file.hasExt "nix"))
+              lib.fileset.toList
+              (map (it: {
+                # Construct a human-readable name
+                name = lib.pipe it [
+                  builtins.toString
+                  builtins.baseNameOf
+                  (lib.replaceStrings [ ".nix" ] [ "" ])
+                  (it: "demo-${it}")
+                ];
+                value = lib.nixosSystem {
+                  modules = [
+                    { nixpkgs.hostPlatform = "x86_64-linux"; }
+                    { system.stateVersion = "25.11"; }
+                    # Fake attributes just to let `nix flake check` pass
+                    {
+                      fileSystems."/".device = "/dev/hda1";
+                      boot.loader.grub.devices = [ "/dev/hda1" ];
+                    }
+                    (import it { inherit self; })
                   ];
-                  value = lib.nixosSystem {
-                    modules = [
-                      { nixpkgs.hostPlatform = "x86_64-linux"; }
-                      { system.stateVersion = "25.11"; }
-                      # Fake attributes just to let `nix flake check` pass
-                      {
-                        fileSystems."/".device = "/dev/hda1";
-                        boot.loader.grub.devices = [ "/dev/hda1" ];
-                      }
-                      (import it { inherit self; })
-                    ];
-                  };
-                }))
-                builtins.listToAttrs
-              ];
+                };
+              }))
+              builtins.listToAttrs
+            ];
           };
       }
     );
