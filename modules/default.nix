@@ -1,6 +1,6 @@
 # localFlake and withSystem allow passing flake to the module through importApply
 # See https://flake.parts/define-module-in-separate-file.html
-{ localFlake, withSystem }:
+{ localFlake, ... }:
 {
   pkgs,
   lib,
