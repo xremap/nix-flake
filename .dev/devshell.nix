@@ -56,6 +56,20 @@
           done
         '';
       }
+      {
+        help = "Run all integration tests";
+        name = "run-integration-tests";
+        command = /* bash */ ''
+          pushd $(git rev-parse --show-toplevel)
+          for i in $(nix flake show --json .dev 2>/dev/null| jq -r '.checks."x86_64-linux" | keys | .[]' | grep -v 'treefmt'); do
+            echo "Running test $i"
+            nix build ".dev#checks.x86_64-linux.$i"
+            echo "Done"
+          done
+
+          popd
+        '';
+      }
     ];
   };
 }
