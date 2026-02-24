@@ -35,7 +35,7 @@ testers.runNixOSTest {
     machine.wait_for_window("root@machine")
     # machine.wait_until_succeeds("${procps}/bin/pgrep kitty", timeout=10)
 
-    machine.sleep(2) # Wait for it to fully start
+    machine.sleep(5) # Wait for it to fully start. This wait is janky.
     output_file = "/tmp/xremap-output"
     machine.send_chars(f"echo -n '9' > {output_file}\n")
     machine.sleep(2)
