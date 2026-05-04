@@ -367,6 +367,11 @@ Two approaches to solve this:
 2. (not applicable to all DEs) use the bind to call DE-specific utility, e.g.
    `hyprctl exec <binary>`. This way whatever UI customizations are present on
    the DE level will get propagated to launched binary.
+3. Add the relevant path to the xremap service. For example, if `which pavucontrol`
+   returns `/run/current-system/sw/bin/pavucontrol` add
+   `systemd.services.xremap.path = [ "/run/current-system/sw" ];` (or
+   `systemd.user.services.xremap.path = [ "/run/current-system/sw" ];` if `serviceMode = user`)
+    **without `/bin`** to your config.
 
 ## (specific to X11) xremap starts but app-specific shortcuts are not working
 
