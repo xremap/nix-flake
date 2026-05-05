@@ -361,7 +361,7 @@ Jan 01 19:30:46 nix xremap[650912]: [2024-01-01T16:30:46Z ERROR xremap::action_d
 This happens because of a discrepancy in `$PATH` variable between your
 environment and xremap service.
 
-Two approaches to solve this:
+Three approaches to solve this:
 
 1. Use binds to something like `${lib.getExe pkgs.pavucontrol}`
 2. (not applicable to all DEs) use the bind to call DE-specific utility, e.g.
@@ -371,7 +371,10 @@ Two approaches to solve this:
    returns `/run/current-system/sw/bin/pavucontrol` add
    `systemd.services.xremap.path = [ "/run/current-system/sw" ];` (or
    `systemd.user.services.xremap.path = [ "/run/current-system/sw" ];` if `serviceMode = user`)
-    **without `/bin`** to your config.
+    **without `/bin`** to your config. This approach also works for non-NixOS
+    systems where you may have binaries in arbitrary locations. The downside is
+    that if the binary were to disappear from the path, trying to launch it
+    would fail.
 
 ## (specific to X11) xremap starts but app-specific shortcuts are not working
 
