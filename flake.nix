@@ -22,7 +22,7 @@
 
     # The Rust source for xremap
     xremap = {
-      url = "github:k0kubun/xremap?ref=v0.15.8";
+      url = "github:k0kubun/xremap?ref=v0.15.9";
       flake = false;
     };
   };
