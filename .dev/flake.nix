@@ -119,7 +119,10 @@
                     { system.stateVersion = "25.11"; }
                     # Fake attributes just to let `nix flake check` pass
                     {
-                      fileSystems."/".device = "/dev/hda1";
+                      fileSystems."/" = {
+                        device = "/dev/hda1";
+                        fsType = "ext4";
+                      };
                       boot.loader.grub.devices = [ "/dev/hda1" ];
                     }
                     (import it { inherit self; })
