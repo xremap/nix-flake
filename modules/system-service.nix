@@ -11,8 +11,16 @@ in
     description = "xremap system service";
     path = [ cfg.package ];
     wantedBy = [ "multi-user.target" ];
+
+    # `xremap` enumerates /dev/input on startup, which races against udev
+    # This will limit the amount of retries
+    startLimitIntervalSec = 60;
+    startLimitBurst = 20;
+
     serviceConfig = mkMerge [
       {
+        Restart = "on-failure";
+        RestartSec = "1";
         PrivateNetwork = true;
         MemoryDenyWriteExecute = true;
         CapabilityBoundingSet = [
