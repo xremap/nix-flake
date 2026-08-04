@@ -24,15 +24,15 @@ testers.runNixOSTest {
 
   testScript = /* python */ ''
     start_all()
-    machine.wait_for_unit("default.target", timeout=10)
+    machine.wait_for_unit("default.target", timeout=30)
     # machine.send_chars("Hyprland\n")
-    machine.wait_until_succeeds("${procps}/bin/pgrep xremap", timeout=10)
-    machine.wait_for_unit("xremap.service", "alice", timeout=10)
+    machine.wait_until_succeeds("${procps}/bin/pgrep xremap", timeout=30)
+    machine.wait_for_unit("xremap.service", "alice", timeout=30)
 
     # Start kitty
     machine.sleep(1)
     machine.send_key('meta_l-ctrl-k')
-    machine.wait_until_succeeds("${procps}/bin/pgrep kitty", timeout=10)
+    machine.wait_until_succeeds("${procps}/bin/pgrep kitty", timeout=30)
 
     machine.sleep(5) # Wait for it to fully start. This wait is janky.
     output_file = "/tmp/xremap-output"

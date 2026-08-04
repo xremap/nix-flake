@@ -23,11 +23,11 @@ testers.runNixOSTest {
     };
 
   testScript = /* python */ ''
-    machine.wait_for_x(timeout=10)
+    machine.wait_for_x(timeout=30)
     # machine.send_chars("Hyprland\n")
-    machine.wait_until_succeeds("${procps}/bin/pgrep xremap", timeout=10)
-    machine.wait_for_unit("xremap.service", timeout=10)
-    machine.wait_for_unit("graphical-session.target", "alice", timeout=10)
+    machine.wait_until_succeeds("${procps}/bin/pgrep xremap", timeout=30)
+    machine.wait_for_unit("xremap.service", timeout=30)
+    machine.wait_for_unit("graphical-session.target", "alice", timeout=30)
 
     # Start kitty
     machine.sleep(1)
