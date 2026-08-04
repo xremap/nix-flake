@@ -13,6 +13,12 @@ testers.runNixOSTest {
         self.nixosModules.default
         ../common/no-network-in-tests.nix
         {
+          # This test relies on `xremap` auto-detecting the keyboard
+          # Looks like QEMU synthetic keystrokes may land on the wrong device
+          # Keep only `i8042` keyboard
+          virtualisation.qemu.virtioKeyboard = false;
+        }
+        {
           services.xremap = {
             enable = true;
             config.keymap = [
