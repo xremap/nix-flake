@@ -14,6 +14,34 @@
         help = "Run the CI formatter locally";
         package = config.treefmt.build.wrapper;
       }
+      {
+        help = "Bump the xremap input to a new tag (e.g. bump-xremap v0.15.14) and refresh both locks";
+        name = "bump-xremap";
+        command = /* bash */ ''
+          set -euo pipefail
+
+          version="''${1:-}"
+          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Usage: bump-xremap <version>, e.g. bump-xremap v0.15.14" >&2
+            exit 1
+          fi
+
+          # Just in case, redeclare PRJ_ROOT
+          PRJ_ROOT="$(git rev-parse --show-toplevel)"
+
+          sed -i -E "s|(url = \"github:k0kubun/xremap\?ref=)v[0-9]+\.[0-9]+\.[0-9]+(\")|\1''${version}\2|" "$PRJ_ROOT/flake.nix"
+
+          (cd "$PRJ_ROOT" && nix flake lock --update-input xremap)
+          (cd "$PRJ_ROOT/.dev" && nix flake lock --update-input parent)
+
+          echo
+          echo "Bumped xremap to $version. Review the diff, then commit (signed), e.g.:"
+          echo "  git add flake.nix flake.lock .dev/flake.lock"
+          echo "  (or)"
+          echo "  git add -u"
+          echo "  git commit -S -m \"chore: bump xremap input to ''${version#v}\""
+        '';
+      }
     ]
     ++ (lib.pipe self'.apps [
       builtins.attrNames
