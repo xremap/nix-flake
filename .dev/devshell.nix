@@ -72,17 +72,39 @@
         '';
       }
       {
-        help = "Build xremap with features one by one";
+        help = "Build xremap with features one by one, plus the no-features and full packages";
         name = "build-all-features";
-        command = /* bash */ ''
-          features=( "gnome" "hypr" "x11" "wlroots" "kde" "cosmic" )
+        command =
+          let
+            # Dynamically build features from `self'`
+            # Alternative is parsing nix flake show, but that would need `jq`, an extra dep.
+            singleFeatures = lib.pipe self'.packages [
+              builtins.attrNames
+              (builtins.filter (
+                name: name != "xremap-full" && name != "xremap-sway" && lib.hasPrefix "xremap-" name
+              ))
+              (map (lib.removePrefix "xremap-"))
+            ];
+          in
+          /* bash */ ''
+            set -euo pipefail
 
-          for feature in "''${features[@]}"; do
-          echo "Building feature $feature"
-          nix build .#xremap-''${feature}
-          echo "Build successful"
-          done
-        '';
+            features=( ${lib.concatMapStringsSep " " (f: ''"${f}"'') singleFeatures} )
+
+            echo "Building xremap"
+            nix build .#xremap
+            echo "Build successful"
+
+            for feature in "''${features[@]}"; do
+            echo "Building feature $feature"
+            nix build .#xremap-''${feature}
+            echo "Build successful"
+            done
+
+            echo "Building xremap-full"
+            nix build .#xremap-full
+            echo "Build successful"
+          '';
       }
       {
         help = "Run all integration tests";

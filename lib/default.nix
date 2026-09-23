@@ -12,6 +12,20 @@ let
 
   inherit (lib.types) nullOr listOf nonEmptyStr;
   inherit (lib) pipe singleton showWarnings;
+
+  # Maps options to upstream Cargo features
+  # Except `withSway`, deprecated upstream
+  withFeatures = {
+    withGnome = "gnome";
+    withX11 = "x11";
+    withHypr = "hypr";
+    withKDE = "kde";
+    withWlroots = "wlroots";
+    withNiri = "niri";
+    withCosmic = "cosmic";
+    withPantheon = "pantheon";
+    withSocket = "socket";
+  };
 in
 {
   commonOptions = with lib; {
@@ -23,6 +37,8 @@ in
     withKDE = mkEnableOption "support KDE-Plasma Wayland";
     withNiri = mkEnableOption "support Niri";
     withCosmic = mkEnableOption "support Cosmic";
+    withPantheon = mkEnableOption "support Pantheon";
+    withSocket = mkEnableOption "the socket client (for driving xremap from another process; can't be auto-selected)";
     enable = mkOption {
       type = types.bool;
       #  This warning should be emitted <=> default value is used.
@@ -40,6 +56,38 @@ in
     package = mkOption {
       type = types.package;
       default =
+        let
+          # Since `v0.15.13` (xremap PR #1004), upstream compiles every enabled feature into one
+          # binary and picks the desktop client at runtime (auto-detected, or via `--desktop`).
+          # Previously compile time checks validated exclusivity of flags, now
+          # multiple are okay.
+          features =
+            lib.pipe withFeatures [
+              (lib.filterAttrs (name: _: cfg.${name}))
+              builtins.attrValues
+            ]
+            ++ lib.optional (cfg.withSway && !cfg.withWlroots) (
+              lib.warn "Consider using withWlroots as recommended by upstream" "wlroots"
+            );
+          uniqueFeatures = lib.unique features;
+          hasDesktopArg = lib.any (arg: arg == "--desktop" || lib.hasPrefix "--desktop=" arg) cfg.extraArgs;
+          selectedPackage =
+            if uniqueFeatures == [ ] then
+              selfPkgs'.xremap
+            else if lib.length uniqueFeatures == 1 then
+              selfPkgs'."xremap-${lib.head uniqueFeatures}"
+            else
+              # More than one backend requested: fall back to xremap-full rather than building a
+              # custom combination of exactly the requested features. Simpler, but means this compiles
+              # every backend's deps, not just the ones enabled -- see the note in docs/HOWTO.md.
+              #
+              # xremap-full also compiles in KDE even when withKDE itself isn't set. Deliberately
+              # not blocked here the way `withKDE` is below: with the default `--desktop auto`,
+              # a KDE client that can't connect (e.g. running as root) is just skipped by
+              # auto-detection in favor of the next compiled-in client, not a hard failure -- so
+              # this doesn't get the same root restriction as explicitly requesting `withKDE`.
+              selfPkgs'.xremap-full;
+        in
         assert
           (
             cfg.withKDE
@@ -50,44 +98,10 @@ in
           )
           || throw "Upstream does not support running withKDE as root";
 
-        # Check that 0 or 1 features are enabled, since upstream throws an error otherwise
-        assert
-          (
-            lib.lists.count (x: x) (
-              builtins.attrValues {
-                inherit (cfg)
-                  withSway
-                  withGnome
-                  withX11
-                  withHypr
-                  withWlroots
-                  withKDE
-                  withNiri
-                  withCosmic
-                  ;
-              }
-            ) <= 1
-          )
-          || throw "Xremap cannot be built with more than one feature. Check that no more than 1 with* feature is enabled";
-
-        if cfg.withWlroots then
-          selfPkgs'.xremap-wlroots
-        else if cfg.withSway then
-          lib.warn "Consider using withWlroots as recommended by upstream" selfPkgs'.xremap-sway
-        else if cfg.withGnome then
-          selfPkgs'.xremap-gnome
-        else if cfg.withX11 then
-          selfPkgs'.xremap-x11
-        else if cfg.withHypr then
-          selfPkgs'.xremap-hypr
-        else if cfg.withKDE then
-          selfPkgs'.xremap-kde
-        else if cfg.withNiri then
-          selfPkgs'.xremap-niri
-        else if cfg.withCosmic then
-          selfPkgs'.xremap-cosmic
+        if cfg.withSocket && !hasDesktopArg then
+          lib.warn "services.xremap.withSocket is enabled, but '--desktop' is not specified in extraArgs. Upstream cannot auto-detect the socket client; consider adding extraArgs = [ \"--desktop\" \"socket\" ];" selectedPackage
         else
-          selfPkgs'.xremap;
+          selectedPackage;
     };
     config = mkOption {
       type = types.submodule { freeformType = settingsFormat.type; };

@@ -36,10 +36,10 @@ service. Not all combinations of mode x desktop environment are supported:
 <!-- `> cat ./compatibility-matrix.md` -->
 
 <!-- BEGIN mdsh -->
-| Mode     | No features        | KDE                      | Gnome                    | X11                | Wlroots                  | Niri               | Cosmic     |
-| -------- | ------------------ | ------------------------ | ------------------------ | ------------------ | ------------------------ | ------------------ | ---------- |
-| System   | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :question:         | :question: |
-| User     | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark: | :question: |
+| Mode     | No features        | KDE                      | Gnome                    | X11                 | Wlroots                  | Niri                | Cosmic     | Pantheon   | Socket     |
+| -------- | ------------------- | ------------------------ | ------------------------ | -------------------- | ------------------------ | ------------------- | ---------- | ---------- | ---------- |
+| System   | :heavy_check_mark:  | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark:  | :heavy_multiplication_x: | :question:          | :question: | :question: | :question: |
+| User     | :heavy_check_mark:  | :heavy_check_mark:       | :heavy_check_mark:       | :heavy_check_mark:  | :heavy_check_mark:       | :heavy_check_mark:  | :question: | :question: | :question: |
 
 - :heavy_check_mark: – tested, works
 - :heavy_multiplication_x: – not implemented
@@ -313,9 +313,30 @@ There are three categories of options:
    - `withHypr`, `bool` – whether to enable non-wlroots based Hyprland support
    - `withNiri`, `bool` – whether to enable Niri support
    - `withCosmic`, `bool` – whether to enable Cosmic support
+   - `withPantheon`, `bool` – whether to enable Pantheon support
+   - `withSocket`, `bool` – whether to enable the socket client, which lets an
+     external process drive xremap instead of a desktop environment. It can't
+     be auto-selected, so pair it with `extraArgs = [ "--desktop" "socket" ];`
 
    All of them are false by default, which means no application-specific remaps
    work as xremap does not know which application is being used.
+
+   More than one `with*` flag can be enabled at once: xremap compiles every
+   enabled feature into the same binary and picks the desktop client at
+   runtime (auto-detected, or via `extraArgs = [ "--desktop" "<name>" ];`).
+   `withKDE` requires `serviceMode = "user"`, since upstream's KDE client
+   doesn't work as root. This restriction only applies to `withKDE` feature,
+   not to `xremap-full` (built whenever 2+ `with*` flags are
+   enabled, see the note below). `xremap-full` compiles in the KDE client, but
+   with the default `--desktop auto`, a KDE client that can't
+   connect is just skipped by autodetection in favor of the next compiled-in
+   client – it doesn't stop xremap from working.
+
+   > [!NOTE]
+   > Enabling exactly one `with*` flag builds the matching single-feature
+   > package (e.g. `withGnome` alone builds `xremap-gnome`). Enabling more
+   > than one falls back to `xremap-full`, which compiles *every* backend
+   > and its dependencies.
 
    - `serviceMode`, `str` – whether to run as user ("`user`") or system
      ("`system`", default)
